@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>PhoneParts — telefon ehtiyot qismlari</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="topline"><span>Telefon ehtiyot qismlari</span><span>☎ <a href="tel:+998900000000">+998 90 000 00 00</a></span></div>
+  <header class="site-header">
+    <a class="brand" href="#home" aria-label="PhoneParts bosh sahifa"><span class="brand-mark">PP</span><span>Phone<span class="accent">Parts</span><small>SMART PARTS STORE</small></span></a>
+    <div class="header-actions"><button class="text-button" id="loginBtn">Kirish / Ro‘yxatdan o‘tish</button><button class="cart-button" id="openCart">Savat <span id="cartCount">0</span></button><a class="admin-link" href="admin.html">Admin</a></div>
+  </header>
+  <main id="home">
+    <section class="hero" aria-label="Aksiyalar banneri">
+      <div class="hero-copy"><span class="eyebrow">PHONEPARTS DO‘KONI</span><h1>Telefoningiz uchun<br><span>kerakli ehtiyot qism.</span></h1><p>Ekran, batareya va boshqa ehtiyot qismlarni qulay toping.</p><a class="primary-button" href="#catalog">Mahsulotlarni ko‘rish <span>→</span></a></div>
+      <div class="hero-art"><div class="glow"></div><div class="phone-shape"><div class="phone-screen"><div class="screen-line"></div><div class="screen-circle"></div><div class="screen-line short"></div></div></div><div class="floating-chip">QUALITY<br><b>PARTS</b></div></div>
+      <div class="hero-controls"><button id="prevBanner" aria-label="Oldingi banner">←</button><div class="banner-dots"><span class="active"></span><span></span><span></span></div><button id="nextBanner" aria-label="Keyingi banner">→</button></div>
+    </section>
+    <section class="search-section"><label class="searchbox"><span>⌕</span><input id="searchInput" type="search" placeholder="Mahsulot, telefon modeli, marka yoki kategoriya bo‘yicha qidiring..."><kbd>ENTER</kbd></label></section>
+    <section class="section" id="categoriesSection"><div class="section-heading"><div><span class="eyebrow">KATALOG</span><h2>Kategoriyalar</h2></div><span class="muted">Kerakli bo‘limni tanlang</span></div><div class="category-grid" id="categoryButtons"></div></section>
+    <section class="section brands-section"><div class="section-heading"><div><span class="eyebrow">MOSLIKNI TANLANG</span><h2>Telefon markalari</h2></div><button class="subtle-button" id="clearFilters">Barchasini ko‘rish ↗</button></div><div class="brand-pills" id="brandButtons"></div><div class="model-row" id="modelButtons"></div></section>
+    <section class="section catalog-section" id="catalog"><div class="section-heading"><div><span class="eyebrow">SIZ UCHUN</span><h2 id="catalogTitle">Yangi mahsulotlar</h2><p class="muted" id="resultCount"></p></div><label class="sort-control">Saralash <select id="sortSelect"><option value="newest">Yangilari birinchi</option><option value="priceAsc">Narx: arzondan qimmatga</option><option value="priceDesc">Narx: qimmatdan arzonga</option></select></label></div><div class="product-grid" id="productGrid"></div><div class="empty-state hidden" id="emptyState">Bu tanlov bo‘yicha mahsulot topilmadi.</div></section>
+    <section class="trust-strip"><div><b>✓</b><span><strong>Mahsulot tanlovi</strong><small>Turli model va markalar</small></span></div><div><b>⌂</b><span><strong>Do‘kondan olib ketish</strong><small>Buyurtma tayyor bo‘lgach</small></span></div><div><b>↗</b><span><strong>Buyurtma holati</strong><small>Profilingizdan kuzating</small></span></div></section>
+  </main>
+  <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">PP</span><span>Phone<span class="accent">Parts</span><small>SMART PARTS STORE</small></span></a><p>Telefon ehtiyot qismlari — qulay qidiruv, sodda buyurtma.</p><div>© <span id="year"></span> PhoneParts</div></footer>
+  <div class="overlay hidden" id="productOverlay"><section class="modal product-modal"><button class="modal-close" data-close="productOverlay">×</button><div id="productDetail"></div></section></div>
+  <div class="overlay hidden" id="cartOverlay"><section class="modal cart-modal"><button class="modal-close" data-close="cartOverlay">×</button><span class="eyebrow">BUYURTMANGIZ</span><h2>Savat</h2><div id="cartItems"></div><div class="cart-total"><span>Mahsulotlar jami</span><strong id="cartTotal">0 so‘m</strong></div><p class="muted small">Buyurtmani rasmiylashtirish uchun akkauntingizga kiring. Yetkazib berish haqi keyin belgilanadi.</p><button class="primary-button full" id="checkoutBtn">Buyurtmani rasmiylashtirish →</button></section></div>
+  <div class="overlay hidden" id="loginOverlay"><section class="modal auth-modal"><button class="modal-close" data-close="loginOverlay">×</button><span class="eyebrow">PHONEPARTS AKKAUNTI</span><h2 id="authTitle">Kirish</h2><form id="authForm"><label>Telefon raqami<input required name="phone" type="tel" placeholder="+998 90 123 45 67"></label><label id="nameField" class="hidden">Ism familiya<input name="name" type="text" placeholder="Ismingiz"></label><label>Parol<input required name="password" type="password" placeholder="Parolingiz"></label><button class="primary-button full" type="submit" id="authSubmit">Kirish</button></form><button class="text-button switch-auth" id="switchAuth">Akkauntingiz yo‘qmi? Ro‘yxatdan o‘ting</button><p class="muted small">Demo: bu namuna sahifada akkaunt va buyurtmalar serverga saqlanmaydi.</p></section></div>
+  <div class="toast hidden" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
