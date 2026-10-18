@@ -15,7 +15,7 @@ const categories = [
 // turli modellar uchun mijozga mos variantlar ko'rsatilishi mumkin.
 
 let products = [];
-
+async function loadProducts() {
 // Supabase ma'lumotlarini shu yerga kiriting
 const supabaseClient = window.supabase.createClient(
   'YOUR_SUPABASE_PROJECT_URL',
@@ -36,7 +36,8 @@ async function loadProducts() {
     `)
     .eq('is_active', true)
     .order('created_at', { ascending: false });
-
+console.log("SUPABASE MAHSULOTLARI:", data);
+console.log("SUPABASE XATOSI:", error);
   if (error) {
     console.error('Mahsulotlarni yuklash xatosi:', error);
     toast('Mahsulotlarni yuklab bo‘lmadi. Ulanishni tekshiring.');
