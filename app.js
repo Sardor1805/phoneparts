@@ -1,7 +1,7 @@
 
 const supabaseClient = window.supabase.createClient(
-  https://tvbguhyuwkcozmuntcss.supabase.co,
-  sb_publishable_4gzBrF4DL7hvyllfyC80Eg_6uLaZO37
+  'https://tvbguhyuwkcozmuntcss.supabase.co',
+  'sb_publishable_4gzBrF4DL7hvyllfyC80Eg_6uLaZO37'
 );
 const categories = [
   {id:'screens',name:'Ekranlar',icon:'▣',hint:'Displey va sensorlar'},
