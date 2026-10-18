@@ -17,10 +17,6 @@ const categories = [
 let products = [];
 async function loadProducts() {}
 // Supabase ma'lumotlarini shu yerga kiriting
-const supabaseClient = window.supabase.createClient(
-  'YOUR_SUPABASE_PROJECT_URL',
-  'YOUR_SUPABASE_PUBLISHABLE_KEY'
-);
 
 async function loadProducts() {
   const { data, error } = await supabaseClient
