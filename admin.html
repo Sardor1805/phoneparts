@@ -1,17 +1,385 @@
+
 <!doctype html>
 <html lang="uz">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PhoneParts — Admin paneli</title><link rel="stylesheet" href="admin.css"></head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PhoneParts — Admin paneli</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
 <body>
-<aside class="sidebar"><a class="brand" href="index.html"><span class="logo">PP</span><span>Phone<span>Parts</span><small>ADMIN PANEL</small></span></a><div class="admin-profile"><div class="avatar">A</div><div><strong>Bosh administrator</strong><small>To‘liq ruxsat</small></div></div><nav id="nav"><button class="nav-item active" data-page="dashboard">▦ <span>Boshqaruv paneli</span></button><button class="nav-item" data-page="products">▣ <span>Mahsulotlar</span></button><button class="nav-item" data-page="brands">◇ <span>Marka va modellar</span></button><button class="nav-item" data-page="orders">▤ <span>Buyurtmalar</span><i>3</i></button><button class="nav-item" data-page="customers">♙ <span>Mijozlar</span></button><button class="nav-item" data-page="stock">⇅ <span>Kirim / Ombor</span></button><button class="nav-item" data-page="reports">▥ <span>Hisobotlar</span></button><button class="nav-item" data-page="settings">⚙ <span>Sozlamalar</span></button></nav><a class="back-link" href="index.html">← Mijozlar saytiga qaytish</a></aside>
-<main class="main"><header class="topbar"><div><button class="mobile-menu" id="mobileMenu">☰</button><span class="crumb">PhoneParts <b>/</b> <strong id="pageCrumb">Boshqaruv paneli</strong></span></div><div class="top-actions"><span class="online-dot">● Tizim namunasi</span><button class="avatar small-avatar">A</button></div></header>
-<section class="page active" id="page-dashboard"><div class="page-title"><div><span class="overline">UMUMIY KO‘RINISH</span><h1>Boshqaruv paneli</h1><p>Do‘kon faoliyatining qisqacha ko‘rinishi.</p></div><span class="date-pill" id="todayDate"></span></div><div class="stats-grid"><article class="stat-card"><span>Bugungi savdo</span><strong>2 450 000 <small>so‘m</small></strong><em>↗ Demo ko‘rsatkich</em></article><article class="stat-card"><span>Sof foyda</span><strong>685 000 <small>so‘m</small></strong><em>↗ Demo ko‘rsatkich</em></article><article class="stat-card"><span>Yangi buyurtmalar</span><strong>3 <small>dona</small></strong><em class="warning">Ko‘rib chiqish kerak</em></article><article class="stat-card"><span>Jami qarzdorlik</span><strong class="debt">1 280 000 <small>so‘m</small></strong><em>2 ta qarzdor mijoz</em></article></div><div class="dashboard-grid"><article class="panel"><div class="panel-head"><div><h2>Buyurtmalar holati</h2><p>Holatlar bo‘yicha taqsimot</p></div><button class="link-button" data-goto="orders">Barchasi →</button></div><div class="order-status-list"><div><span class="status-dot new"></span><span>Yangi</span><b>3</b></div><div><span class="status-dot assembling"></span><span>Yig‘ilmoqda</span><b>5</b></div><div><span class="status-dot ready"></span><span>Tayyor</span><b>4</b></div><div><span class="status-dot sent"></span><span>Jo‘natildi</span><b>2</b></div></div></article><article class="panel"><div class="panel-head"><div><h2>Tezkor amallar</h2><p>Ko‘p ishlatiladigan bo‘limlar</p></div></div><div class="quick-actions"><button data-goto="products"><b>＋</b><span>Mahsulot qo‘shish</span><i>→</i></button><button data-goto="stock"><b>⇅</b><span>Omborga kirim</span><i>→</i></button><button data-goto="orders"><b>▤</b><span>Buyurtmalarni ko‘rish</span><i>→</i></button><button data-goto="reports"><b>▥</b><span>Hisobot ochish</span><i>→</i></button></div></article></div><article class="panel table-panel"><div class="panel-head"><div><h2>So‘nggi buyurtmalar</h2><p>Namuna ma’lumotlari</p></div><button class="link-button" data-goto="orders">Barcha buyurtmalar →</button></div><div class="table-wrap"><table><thead><tr><th>Buyurtma</th><th>Mijoz</th><th>Sana</th><th>Summa</th><th>Holat</th></tr></thead><tbody><tr><td class="code">PP-20261018-003</td><td>Azizbek A.</td><td>Bugun, 01:10</td><td>425 000 so‘m</td><td><span class="pill new-pill">Yangi</span></td></tr><tr><td class="code">PP-20261018-002</td><td>Malika S.</td><td>Bugun, 00:42</td><td>310 000 so‘m</td><td><span class="pill work-pill">Yig‘ilmoqda</span></td></tr><tr><td class="code">PP-20261018-001</td><td>Javohir T.</td><td>Bugun, 00:18</td><td>285 000 so‘m</td><td><span class="pill ready-pill">Tayyor</span></td></tr></tbody></table></div></article></section>
-<section class="page" id="page-products"><div class="page-title"><div><span class="overline">KATALOG</span><h1>Mahsulotlar</h1><p>Mahsulotlar, narxlar, mos modellar va holatni boshqaring.</p></div><button class="primary" id="newProductBtn">＋ Mahsulot qo‘shish</button></div><div class="toolbar"><input id="productSearch" placeholder="Mahsulot nomi bo‘yicha qidirish..."><select id="productCategory"><option value="">Barcha kategoriyalar</option><option>Ekranlar</option><option>Batareyalar</option><option>Orqa korpuslar</option><option>Ekran oynalari</option><option>Boshqa ehtiyot qismlar</option></select><select id="productState"><option value="">Barcha holatlar</option><option>Omborda mavjud</option><option>1 kunda do‘konga keladi</option><option>Yashirilgan</option></select></div><article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Mahsulot</th><th>Kategoriya</th><th>Ichki kod / asl nomi</th><th>Marka va modellar</th><th>Sotuv narxi</th><th>Holat</th><th>Amallar</th></tr></thead><tbody id="adminProductRows"></tbody></table></div></article><p class="note">Ekranlar bo‘limida bir xil ichki kod — bitta mahsulot. Bir nechta marka/model mosligi bitta mahsulot yozuvida saqlanadi; mijoz katalogida mos variantlar sifatida ko‘rsatilishi mumkin.</p></section>
-<section class="page" id="page-brands"><div class="page-title"><div><span class="overline">KATALOG SOZLAMALARI</span><h1>Marka va modellar</h1><p>Admin oldindan marka va modellarni boshqaradi. Mahsulot kiritishda ham yangi marka/model qo‘shish mumkin.</p></div><button class="primary" id="addBrandBtn">＋ Marka qo‘shish</button></div><div class="brand-admin-grid" id="brandAdminGrid"></div></section>
-<section class="page" id="page-orders"><div class="page-title"><div><span class="overline">SAVDO JARAYONI</span><h1>Buyurtmalar</h1><p>Buyurtma holatini yangilang. Buyurtma raqami qayta ishlatilmaydi.</p></div></div><div class="toolbar"><input placeholder="Buyurtma raqami yoki mijoz..." id="orderSearch"><select id="orderFilter"><option value="">Barcha holatlar</option><option>Yangi</option><option>Yig‘ilmoqda</option><option>Kam tayyor</option><option>Tayyor</option><option>Jo‘natildi</option><option>Topshirildi</option><option>Bekor qilindi</option></select></div><article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Buyurtma raqami</th><th>Mijoz</th><th>Mahsulot jami</th><th>Yetkazish</th><th>Holat</th><th>Holatni o‘zgartirish</th></tr></thead><tbody id="orderRows"></tbody></table></div></article><p class="note">Namuna: haqiqiy buyurtmalar, ketma-ket raqam va o‘zgarishlar server bazasi orqali xavfsiz yuritilishi kerak.</p></section>
-<section class="page" id="page-customers"><div class="page-title"><div><span class="overline">MIJOZLAR BAZASI</span><h1>Mijozlar</h1><p>Qarzdorlik bo‘yicha tartiblangan namuna ro‘yxat.</p></div></div><div class="toolbar"><input placeholder="Ism yoki telefon raqami..." id="customerSearch"><select><option>Qarzdorlik: kattadan kichikka</option><option>Ism bo‘yicha</option></select></div><article class="panel table-panel"><div class="table-wrap"><table><thead><tr><th>Mijoz</th><th>Telefon</th><th>Buyurtmalar</th><th>To‘lovlar</th><th>Qarzdorlik / balans</th><th>Holat</th></tr></thead><tbody id="customerRows"></tbody></table></div></article></section>
-<section class="page" id="page-stock"><div class="page-title"><div><span class="overline">OMBOR HISOBI</span><h1>Kirim / Ombor</h1><p>Har bir kirim partiyasi miqdori va tannarxi bilan alohida yoziladi.</p></div><button class="primary" id="stockEntryBtn">＋ Kirim kiritish</button></div><div class="stats-grid compact-stats"><article class="stat-card"><span>Jami SKU</span><strong>8</strong></article><article class="stat-card"><span>Ombordagi dona</span><strong>43</strong></article><article class="stat-card"><span>Kam qolgan</span><strong>2</strong></article></div><article class="panel table-panel"><div class="panel-head"><div><h2>Ombor qoldiqlari</h2><p>Namuna mahsulotlari</p></div></div><div class="table-wrap"><table><thead><tr><th>Mahsulot</th><th>Marka/model</th><th>Jami qoldiq</th><th>Oxirgi kirim tannarxi</th><th>Holat</th></tr></thead><tbody id="stockRows"></tbody></table></div></article><p class="note">Sotilgan mahsulot tannarxi partiyalar bo‘yicha hisoblanadi. FIFO usuli hozircha tasdiqlanmagan, ishlab chiqishda aniqlashtiriladi.</p></section>
-<section class="page" id="page-reports"><div class="page-title"><div><span class="overline">TAHLIL</span><h1>Hisobotlar</h1><p>Savdo, tushum, tannarx va foyda bir-biridan alohida hisoblanadi.</p></div><button class="secondary" onclick="window.print()">Chop etish</button></div><div class="toolbar"><label>Boshlanish sanasi <input type="date" id="reportStart"></label><label>Tugash sanasi <input type="date" id="reportEnd"></label><button class="primary" id="applyReport">Hisobotni ko‘rsatish</button></div><div class="stats-grid"><article class="stat-card"><span>Savdo (topshirilgan buyurtmalar)</span><strong>8 450 000 <small>so‘m</small></strong></article><article class="stat-card"><span>Tannarx</span><strong>5 120 000 <small>so‘m</small></strong></article><article class="stat-card"><span>Yalpi foyda</span><strong>3 330 000 <small>so‘m</small></strong></article><article class="stat-card"><span>Sof foyda</span><strong>2 780 000 <small>so‘m</small></strong></article></div><article class="panel report-note"><h2>Hisoblash qoidalari</h2><p><b>Savdo</b> — topshirilgan buyurtmalardagi mahsulotlar qiymati.</p><p><b>Tushum</b> — amalda qayd etilgan to‘lovlar.</p><p><b>Yalpi foyda</b> — savdo minus sotilgan mahsulot tannarxi.</p><p><b>Sof foyda</b> — yalpi foyda minus qo‘shimcha xarajatlar.</p><button class="secondary" id="exportCsv">Excel uchun CSV yuklab olish</button></article></section>
-<section class="page" id="page-settings"><div class="page-title"><div><span class="overline">TIZIM</span><h1>Sozlamalar</h1><p>Namuna sozlamalari. Admin paneli tili — faqat o‘zbek tili.</p></div></div><div class="settings-grid"><article class="panel setting-card"><h2>Bannerlar</h2><p>Banner qo‘shish, rasm yuklash, matnni o‘zgartirish, tartiblash va yoqib/o‘chirish faqat bosh administratorga ruxsat etiladi.</p><button class="secondary" id="bannerSettingsBtn">Bannerlarni boshqarish</button></article><article class="panel setting-card"><h2>Xodimlar va ruxsatlar</h2><p>Har bir xodimning alohida kirishi va ruxsatlari bo‘ladi. Xodimlar mahsulot narxi va ruxsatlarni faqat alohida vakolat berilganda o‘zgartira oladi.</p><button class="secondary" id="employeeSettingsBtn">Xodimlar sozlamasi</button></article><article class="panel setting-card"><h2>Yetkazib berish hududlari</h2><p>Faol hududlar mijozga tanlov sifatida chiqadi. O‘chirilgan hududlar eski buyurtma tarixini o‘zgartirmaydi.</p><button class="secondary" id="deliverySettingsBtn">Hududlarni boshqarish</button></article><article class="panel setting-card"><h2>Zaxira nusxa</h2><p>Mahsulotlar, ombor, buyurtmalar, to‘lovlar va harakatlar tarixini kundalik zaxiralash kerak.</p><span class="pill ready-pill">Talablar ro‘yxatida</span></article></div></section>
+
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <span class="logo">PP</span>
+    <span>Phone<span>Parts</span><small>ADMIN PANEL</small></span>
+  </a>
+
+  <div class="admin-profile">
+    <div class="avatar">A</div>
+    <div><strong>Bosh administrator</strong><small>To‘liq ruxsat</small></div>
+  </div>
+
+  <nav id="nav">
+    <button class="nav-item active" data-page="dashboard">▦ <span>Boshqaruv paneli</span></button>
+    <button class="nav-item" data-page="products">▣ <span>Mahsulotlar</span></button>
+    <button class="nav-item" data-page="brands">◇ <span>Marka va modellar</span></button>
+    <button class="nav-item" data-page="orders">▤ <span>Buyurtmalar</span><i id="navOrderCount">0</i></button>
+    <button class="nav-item" data-page="customers">♙ <span>Mijozlar</span></button>
+    <button class="nav-item" data-page="stock">⇅ <span>Kirim / Ombor</span></button>
+    <button class="nav-item" data-page="reports">▥ <span>Hisobotlar</span></button>
+    <button class="nav-item" data-page="settings">⚙ <span>Sozlamalar</span></button>
+  </nav>
+
+  <a class="back-link" href="index.html">← Mijozlar saytiga qaytish</a>
+</aside>
+
+<main class="main">
+
+  <header class="topbar">
+    <div>
+      <button class="mobile-menu" id="mobileMenu">☰</button>
+      <span class="crumb">PhoneParts <b>/</b> <strong id="pageCrumb">Boshqaruv paneli</strong></span>
+    </div>
+    <div class="top-actions">
+      <span class="online-dot">● Tizim</span>
+      <button class="avatar small-avatar">A</button>
+    </div>
+  </header>
+
+  <!-- BOSHQAruv PANELI -->
+  <section class="page active" id="page-dashboard">
+    <div class="page-title">
+      <div>
+        <span class="overline">UMUMIY KO‘RINISH</span>
+        <h1>Boshqaruv paneli</h1>
+        <p>Do‘kon faoliyatining qisqacha ko‘rinishi.</p>
+      </div>
+      <span class="date-pill" id="todayDate"></span>
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card">
+        <span>Bugungi savdo</span>
+        <strong id="dashboardSales">0 <small>so‘m</small></strong>
+        <em>Bugungi buyurtmalar</em>
+      </article>
+      <article class="stat-card">
+        <span>Sof foyda</span>
+        <strong id="dashboardProfit">0 <small>so‘m</small></strong>
+        <em>Hisoblangan foyda</em>
+      </article>
+      <article class="stat-card">
+        <span>Yangi buyurtmalar</span>
+        <strong id="dashboardNewOrders">0 <small>dona</small></strong>
+        <em class="warning">Ko‘rib chiqish kerak</em>
+      </article>
+      <article class="stat-card">
+        <span>Jami qarzdorlik</span>
+        <strong class="debt" id="dashboardDebt">0 <small>so‘m</small></strong>
+        <em>Qayd etilgan qarzdorlik</em>
+      </article>
+    </div>
+
+    <div class="dashboard-grid">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Buyurtmalar holati</h2><p>Holatlar bo‘yicha taqsimot</p></div>
+          <button class="link-button" data-goto="orders">Barchasi →</button>
+        </div>
+        <div class="order-status-list">
+          <div><span class="status-dot new"></span><span>Yangi</span><b id="countNew">0</b></div>
+          <div><span class="status-dot assembling"></span><span>Yig‘ilmoqda</span><b id="countAssembling">0</b></div>
+          <div><span class="status-dot ready"></span><span>Tayyor</span><b id="countReady">0</b></div>
+          <div><span class="status-dot sent"></span><span>Jo‘natildi</span><b id="countSent">0</b></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2>Tezkor amallar</h2><p>Ko‘p ishlatiladigan bo‘limlar</p></div>
+        </div>
+        <div class="quick-actions">
+          <button data-goto="products"><b>＋</b><span>Mahsulot qo‘shish</span><i>→</i></button>
+          <button data-goto="stock"><b>⇅</b><span>Omborga kirim</span><i>→</i></button>
+          <button data-goto="orders"><b>▤</b><span>Buyurtmalarni ko‘rish</span><i>→</i></button>
+          <button data-goto="reports"><b>▥</b><span>Hisobot ochish</span><i>→</i></button>
+        </div>
+      </article>
+    </div>
+
+    <article class="panel table-panel">
+      <div class="panel-head">
+        <div><h2>So‘nggi buyurtmalar</h2><p>Bazadan yuklanadigan buyurtmalar</p></div>
+        <button class="link-button" data-goto="orders">Barcha buyurtmalar →</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Buyurtma</th><th>Mijoz</th><th>Sana</th><th>Summa</th><th>Holat</th></tr>
+          </thead>
+          <tbody id="recentOrderRows">
+            <tr><td colspan="5" style="text-align:center;padding:24px">Buyurtmalar yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <!-- MAHSULOTLAR -->
+  <section class="page" id="page-products">
+    <div class="page-title">
+      <div>
+        <span class="overline">KATALOG</span>
+        <h1>Mahsulotlar</h1>
+        <p>Mahsulotlar, narxlar, mos modellar va holatni boshqaring.</p>
+      </div>
+      <button class="primary" id="newProductBtn">＋ Mahsulot qo‘shish</button>
+    </div>
+
+    <div class="toolbar">
+      <input id="productSearch" placeholder="Mahsulot nomi bo‘yicha qidirish...">
+      <select id="productCategory">
+        <option value="">Barcha kategoriyalar</option>
+        <option value="screens">Ekranlar</option>
+        <option value="batteries">Batareyalar</option>
+        <option value="back-covers">Orqa korpuslar</option>
+        <option value="glass">Ekran oynalari</option>
+        <option value="other">Boshqa ehtiyot qismlar</option>
+      </select>
+      <select id="productState">
+        <option value="">Barcha holatlar</option>
+        <option value="Faol">Faol</option>
+        <option value="Yashirin">Yashirin</option>
+      </select>
+    </div>
+
+    <article class="panel table-panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Mahsulot</th><th>Kategoriya</th>
+              <th>Marka</th><th>Modellar</th><th>Sotuv narxi</th>
+              <th>Tannarx</th><th>Qoldiq</th><th>Holat</th><th>Amallar</th>
+            </tr>
+          </thead>
+          <tbody id="adminProductRows">
+            <tr><td colspan="10" style="text-align:center;padding:24px">Mahsulotlar yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <p class="note">
+      Bir xil ichki kod va kategoriya takrorlanmasligi tekshiriladi.
+      Mos telefon modellari mahsulotga bog‘lanadi.
+    </p>
+  </section>
+
+  <!-- MARKA VA MODELLAR -->
+  <section class="page" id="page-brands">
+    <div class="page-title">
+      <div>
+        <span class="overline">KATALOG SOZLAMALARI</span>
+        <h1>Marka va modellar</h1>
+        <p>Marka va telefon modellarini boshqaring.</p>
+      </div>
+      <button class="primary" id="addBrandBtn">＋ Marka qo‘shish</button>
+    </div>
+    <div class="brand-admin-grid" id="brandAdminGrid">
+      <p>Markalar yuklanmoqda...</p>
+    </div>
+  </section>
+
+  <!-- BUYURTMALAR -->
+  <section class="page" id="page-orders">
+    <div class="page-title">
+      <div>
+        <span class="overline">SAVDO JARAYONI</span>
+        <h1>Buyurtmalar</h1>
+        <p>Buyurtma holatini boshqaring.</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input placeholder="Buyurtma raqami yoki mijoz..." id="orderSearch">
+      <select id="orderFilter">
+        <option value="">Barcha holatlar</option>
+        <option>Yangi</option>
+        <option>Tasdiqlangan</option>
+        <option>Yuborilgan</option>
+        <option>Yakunlangan</option>
+        <option>Bekor qilingan</option>
+      </select>
+    </div>
+
+    <article class="panel table-panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Buyurtma raqami</th><th>Mijoz</th><th>Telefon</th>
+              <th>Manzil</th><th>Jami summa</th><th>Holat</th><th>Sana</th>
+            </tr>
+          </thead>
+          <tbody id="orderRows">
+            <tr><td colspan="7" style="text-align:center;padding:24px">Buyurtmalar yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+    <p class="note">Buyurtma holatlari Supabase bazasida saqlanadi.</p>
+  </section>
+
+  <!-- MIJOZLAR -->
+  <section class="page" id="page-customers">
+    <div class="page-title">
+      <div>
+        <span class="overline">MIJOZLAR BAZASI</span>
+        <h1>Mijozlar</h1>
+        <p>Buyurtmalar asosida aniqlangan mijozlar ro‘yxati.</p>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input placeholder="Ism yoki telefon raqami..." id="customerSearch">
+    </div>
+
+    <article class="panel table-panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Mijoz</th><th>Telefon</th><th>Manzil</th><th>Sana</th></tr>
+          </thead>
+          <tbody id="customerRows">
+            <tr><td colspan="4" style="text-align:center;padding:24px">Mijozlar yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+  </section>
+
+  <!-- OMBOR -->
+  <section class="page" id="page-stock">
+    <div class="page-title">
+      <div>
+        <span class="overline">OMBOR HISOBI</span>
+        <h1>Kirim / Ombor</h1>
+        <p>Mahsulot qoldiqlari va omborga kirimlarni boshqaring.</p>
+      </div>
+      <button class="primary" id="stockEntryBtn">＋ Kirim kiritish</button>
+    </div>
+
+    <div class="stats-grid compact-stats">
+      <article class="stat-card"><span>Jami SKU</span><strong id="stockSkuCount">0</strong></article>
+      <article class="stat-card"><span>Ombordagi dona</span><strong id="stockTotalUnits">0</strong></article>
+      <article class="stat-card"><span>Kam qolgan</span><strong id="stockLowCount">0</strong></article>
+    </div>
+
+    <article class="panel table-panel">
+      <div class="panel-head">
+        <div><h2>Ombor qoldiqlari</h2><p>Supabase bazasidagi mahsulotlar</p></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Mahsulot</th><th>Ichki kod</th><th>Qoldiq</th><th>Tannarx</th><th>Sotuv narxi</th><th>Amallar</th></tr>
+          </thead>
+          <tbody id="stockRows">
+            <tr><td colspan="6" style="text-align:center;padding:24px">Ombor yuklanmoqda...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <p class="note">Bu ko‘rinish joriy qoldiqni ko‘rsatadi. Alohida kirim partiyalari tarixi uchun qo‘shimcha jadval kerak bo‘ladi.</p>
+  </section>
+
+  <!-- HISOBOTLAR -->
+  <section class="page" id="page-reports">
+    <div class="page-title">
+      <div>
+        <span class="overline">TAHLIL</span>
+        <h1>Hisobotlar</h1>
+        <p>Savdo, tannarx va foydani tahlil qiling.</p>
+      </div>
+      <button class="secondary" onclick="window.print()">Chop etish</button>
+    </div>
+
+    <div class="toolbar">
+      <label>Boshlanish sanasi <input type="date" id="reportStart"></label>
+      <label>Tugash sanasi <input type="date" id="reportEnd"></label>
+      <button class="primary" id="applyReport">Hisobotni ko‘rsatish</button>
+    </div>
+
+    <div class="stats-grid">
+      <article class="stat-card"><span>Savdo</span><strong id="reportSales">0 <small>so‘m</small></strong></article>
+      <article class="stat-card"><span>Tannarx</span><strong id="reportCost">0 <small>so‘m</small></strong></article>
+      <article class="stat-card"><span>Yalpi foyda</span><strong id="reportGrossProfit">0 <small>so‘m</small></strong></article>
+      <article class="stat-card"><span>Sof foyda</span><strong id="reportNetProfit">0 <small>so‘m</small></strong></article>
+    </div>
+
+    <article class="panel report-note">
+      <h2>Hisoblash qoidalari</h2>
+      <p><b>Savdo</b> — yakunlangan buyurtmalar summasi.</p>
+      <p><b>Tannarx</b> — sotilgan mahsulot tannarxi.</p>
+      <p><b>Yalpi foyda</b> — savdo minus tannarx.</p>
+      <p><b>Sof foyda</b> — yalpi foyda minus qo‘shimcha xarajatlar.</p>
+      <button class="secondary" id="exportCsv">Excel uchun CSV yuklab olish</button>
+    </article>
+  </section>
+
+  <!-- SOZLAMALAR -->
+  <section class="page" id="page-settings">
+    <div class="page-title">
+      <div>
+        <span class="overline">TIZIM</span>
+        <h1>Sozlamalar</h1>
+        <p>PhoneParts tizimi sozlamalari.</p>
+      </div>
+    </div>
+
+    <div class="settings-grid">
+      <article class="panel setting-card">
+        <h2>Bannerlar</h2>
+        <p>Sayt bannerlarini boshqarish.</p>
+        <button class="secondary" id="bannerSettingsBtn">Bannerlarni boshqarish</button>
+      </article>
+
+      <article class="panel setting-card">
+        <h2>Xodimlar va ruxsatlar</h2>
+        <p>Xodimlar va ularning vakolatlarini boshqarish.</p>
+        <button class="secondary" id="employeeSettingsBtn">Xodimlar sozlamasi</button>
+      </article>
+
+      <article class="panel setting-card">
+        <h2>Yetkazib berish hududlari</h2>
+        <p>Yetkazib berish hududlari sozlamalari.</p>
+        <button class="secondary" id="deliverySettingsBtn">Hududlarni boshqarish</button>
+      </article>
+
+      <article class="panel setting-card">
+        <h2>Zaxira nusxa</h2>
+        <p>Mahsulotlar, ombor va buyurtmalarni muntazam zaxiralash kerak.</p>
+        <span class="pill ready-pill">Tavsiya etiladi</span>
+      </article>
+    </div>
+  </section>
+
 </main>
-<div class="modal-backdrop hidden" id="formBackdrop"><section class="form-modal"><button class="close-modal" id="closeForm">×</button><div id="formContent"></div></section></div><div class="toast hidden" id="adminToast"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="admin.js"></script></body></html>
+
+<!-- MODAL -->
+<div class="modal-backdrop hidden" id="formBackdrop">
+  <section class="form-modal">
+    <button class="close-modal" id="closeForm">×</button>
+    <div id="formContent"></div>
+  </section>
+</div>
+
+<div class="toast hidden" id="adminToast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+</body>
+</html>
