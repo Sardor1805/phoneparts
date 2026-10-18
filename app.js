@@ -15,7 +15,7 @@ const categories = [
 // turli modellar uchun mijozga mos variantlar ko'rsatilishi mumkin.
 
 let products = [];
-async function loadProducts() {}
+//async function loadProducts() {}
 // Supabase ma'lumotlarini shu yerga kiriting
 
 async function loadProducts() {
