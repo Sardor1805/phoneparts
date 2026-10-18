@@ -1114,21 +1114,158 @@ if (todayDate) {
 }
 
 // 23. ADMIN PANELNI ISHGA TUSHIRISH
+
+/* 23. ADMIN LOGIN VA RUXSAT TEKSHIRUVI */
+
+let adminInitialized = false;
+let loginBusy = false;
+
+function showLogin(message = "") {
+  const loginScreen = document.querySelector("#loginScreen");
+  const adminApp = document.querySelector("#adminApp");
+  const errorBox = document.querySelector("#loginError");
+
+  if (adminApp) adminApp.hidden = true;
+  if (loginScreen) loginScreen.style.display = "flex";
+  if (errorBox) errorBox.textContent = message;
+}
+
+function showAdmin() {
+  const loginScreen = document.querySelector("#loginScreen");
+  const adminApp = document.querySelector("#adminApp");
+
+  if (loginScreen) loginScreen.style.display = "none";
+  if (adminApp) adminApp.hidden = false;
+}
+
+async function verifyAdmin(user) {
+  if (!user) {
+    throw new Error("Foydalanuvchi sessiyasi topilmadi.");
+  }
+
+  const { data: profile, error } = await supabaseClient
+    .from("profiles")
+    .select("role")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(
+      "Admin rolini tekshirib bo‘lmadi: " + error.message
+    );
+  }
+
+  if (profile?.role !== "admin") {
+    throw new Error(
+      "Bu hisobga admin huquqi berilmagan. Administrator bilan bog‘laning."
+    );
+  }
+
+  return true;
+}
+
 async function initAdmin() {
-  if (!window.supabase) {
-    toast("Supabase kutubxonasi yuklanmagan. admin.html faylini tekshiring.", "error");
+  if (adminInitialized) return;
+
+  adminInitialized = true;
+
+  try {
+    await Promise.all([
+      loadAdminProducts(),
+      loadBrands(),
+      loadOrders(),
+      loadCustomers()
+    ]);
+
+    renderStock();
+    refreshStockProductOptions();
+  } catch (error) {
+    adminInitialized = false;
+    throw error;
+  }
+}
+
+async function enterAdmin(user) {
+  await verifyAdmin(user);
+  showAdmin();
+  await initAdmin();
+}
+
+const loginForm = document.querySelector("#loginForm");
+
+loginForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  if (loginBusy) return;
+  loginBusy = true;
+
+  const button = document.querySelector("#loginSubmit");
+  const errorBox = document.querySelector("#loginError");
+  const email = document.querySelector("#loginEmail").value.trim();
+  const password = document.querySelector("#loginPassword").value;
+
+  button.disabled = true;
+  button.textContent = "Tekshirilmoqda...";
+  errorBox.textContent = "";
+
+  try {
+    const { data, error } = await supabaseClient.auth
+      .signInWithPassword({ email, password });
+
+    if (error) throw error;
+
+    try {
+      await enterAdmin(data.user);
+    } catch (roleError) {
+      await supabaseClient.auth.signOut();
+      throw roleError;
+    }
+  } catch (error) {
+    showLogin(error.message || "Kirish amalga oshmadi.");
+  } finally {
+    loginBusy = false;
+    button.disabled = false;
+    button.textContent = "Kirish";
+  }
+});
+
+document.querySelector("#logoutBtn")?.addEventListener("click", async () => {
+  const { error } = await supabaseClient.auth.signOut();
+
+  if (error) {
+    showError(error, "Tizimdan chiqishda xatolik");
     return;
   }
 
-  await Promise.all([
-    loadAdminProducts(),
-    loadBrands(),
-    loadOrders(),
-    loadCustomers()
-  ]);
+  adminInitialized = false;
+  loginForm?.reset();
+  showLogin("Tizimdan chiqdingiz.");
+});
 
-  renderStock();
-  refreshStockProductOptions();
+async function startAdmin() {
+  showLogin();
+
+  if (!window.supabase) {
+    showLogin("Supabase kutubxonasi yuklanmagan.");
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient.auth.getSession();
+
+    if (error) throw error;
+
+    if (!data.session?.user) {
+      showLogin();
+      return;
+    }
+
+    await enterAdmin(data.session.user);
+  } catch (error) {
+    await supabaseClient.auth.signOut();
+    showLogin(error.message || "Sessiyani tekshirishda xatolik.");
+  }
 }
 
-initAdmin();
+startAdmin();
+
