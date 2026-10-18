@@ -8,17 +8,80 @@ const categories = [
 // Demo ma'lumotlar. Haqiqiy saytda mahsulotlar server/bazadan keladi.
 // Ekranlar bo'limida internalCode bitta mahsulotni anglatadi; compatible ro'yxatidagi
 // turli modellar uchun mijozga mos variantlar ko'rsatilishi mumkin.
-const products = [
- {id:1,internalCode:'OLED-SAM-A15',category:'screens',name:'Samsung A15 OLED displey',brand:'Samsung',models:['Galaxy A15'],compatible:['Samsung Galaxy A15'],price:285000,cost:220000,stock:7,status:'stock',created:10,description:'Ranglari tiniq OLED displey moduli. O‘rnatishdan oldin ulanishini tekshirish tavsiya etiladi.',symbol:'▣'},
- {id:2,internalCode:'INC-IP11-01',category:'screens',name:'iPhone 11 displey moduli',brand:'Apple',models:['iPhone 11'],compatible:['Apple iPhone 11'],price:310000,cost:245000,stock:3,status:'stock',created:9,description:'iPhone 11 uchun mos displey moduli.',symbol:'▣'},
- {id:3,internalCode:'LCD-RED-N12',category:'screens',name:'Redmi Note 12 ekran',brand:'Xiaomi',models:['Redmi Note 12','Redmi Note 12 4G'],compatible:['Xiaomi Redmi Note 12','Xiaomi Redmi Note 12 4G'],price:245000,cost:180000,stock:0,status:'wait',created:8,description:'Ko‘rsatilgan modellar bilan mosligi bo‘yicha buyurtma berishdan oldin tekshiring.',symbol:'▣'},
- {id:4,internalCode:'BAT-SAM-A12',category:'batteries',name:'Samsung A12 batareyasi',brand:'Samsung',models:['Galaxy A12'],compatible:['Samsung Galaxy A12'],price:95000,cost:60000,stock:12,status:'stock',created:7,description:'Samsung Galaxy A12 uchun batareya.',symbol:'▰'},
- {id:5,internalCode:'BAT-RED-10',category:'batteries',name:'Redmi 10 batareyasi',brand:'Xiaomi',models:['Redmi 10','Redmi 10 2022'],compatible:['Xiaomi Redmi 10','Xiaomi Redmi 10 2022'],price:88000,cost:55000,stock:4,status:'stock',created:6,description:'Mos modellar: Redmi 10 va Redmi 10 2022.',symbol:'▰'},
- {id:6,internalCode:'BACK-IP-XR',category:'back-covers',name:'iPhone XR orqa korpusi',brand:'Apple',models:['iPhone XR'],compatible:['Apple iPhone XR'],price:115000,cost:70000,stock:5,status:'stock',created:5,description:'iPhone XR uchun orqa korpus.',symbol:'▱'},
- {id:7,internalCode:'GLASS-SAM-A32',category:'glass',name:'Samsung A32 ekran oynasi',brand:'Samsung',models:['Galaxy A32'],compatible:['Samsung Galaxy A32'],price:65000,cost:35000,stock:10,status:'stock',created:4,description:'Samsung Galaxy A32 uchun ekran oynasi.',symbol:'◇'},
- {id:8,internalCode:'FLEX-IP-12',category:'other',name:'iPhone 12 zaryad shleyfi',brand:'Apple',models:['iPhone 12'],compatible:['Apple iPhone 12'],price:125000,cost:80000,stock:2,status:'stock',created:3,description:'iPhone 12 uchun zaryad porti shleyfi.',symbol:'⚙'},
- {id:9,internalCode:'OLED-SAM-A15',category:'screens',name:'Samsung A15 OLED displey',brand:'Samsung',models:['Galaxy A15'],compatible:['Samsung Galaxy A15'],price:285000,cost:220000,stock:7,status:'stock',created:2,description:'Bu karta namuna ma’lumotida moslik varianti sifatida turibdi.',symbol:'▣'}
-];
+
+let products = [];
+
+// Supabase ma'lumotlarini shu yerga kiriting
+const supabaseClient = window.supabase.createClient(
+  'YOUR_SUPABASE_PROJECT_URL',
+  'YOUR_SUPABASE_PUBLISHABLE_KEY'
+);
+
+async function loadProducts() {
+  const { data, error } = await supabaseClient
+    .from('products')
+    .select(`
+      *,
+      product_compatibility (
+        phone_models (
+          name,
+          brands (name)
+        )
+      )
+    `)
+    .eq('is_active', true)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Mahsulotlarni yuklash xatosi:', error);
+    toast('Mahsulotlarni yuklab bo‘lmadi. Ulanishni tekshiring.');
+    renderAll();
+    updateCart();
+    return;
+  }
+
+  products = (data || []).map(p => {
+    const models = (p.product_compatibility || [])
+      .map(item => item.phone_models)
+      .filter(Boolean);
+
+    const modelNames = [...new Set(models.map(m => m.name))];
+    const brandNames = [...new Set(
+      models.map(m => m.brands?.name).filter(Boolean)
+    )];
+
+    const categorySymbols = {
+      screens: '▣',
+      batteries: '▰',
+      'back-covers': '▱',
+      glass: '◇',
+      other: '⚙'
+    };
+
+    return {
+      id: p.id,
+      internalCode: p.internal_code,
+      category: p.category,
+      name: p.name,
+      brand: brandNames.join(', ') || 'Boshqa',
+      models: modelNames.length ? modelNames : ['Model kiritilmagan'],
+      compatible: models.map(m =>
+        [m.brands?.name, m.name].filter(Boolean).join(' ')
+      ),
+      price: Number(p.price),
+      cost: Number(p.cost_price),
+      stock: Number(p.stock),
+      status: Number(p.stock) > 0 ? 'stock' : 'wait',
+      created: Date.parse(p.created_at) || 0,
+      description: p.description || '',
+      symbol: categorySymbols[p.category] || '⚙'
+    };
+  });
+
+  renderAll();
+  updateCart();
+}
+
 const state={category:null,brand:null,model:null,search:'',sort:'newest',cart:[],authMode:'login',user:null,banner:0};
 const $=id=>document.getElementById(id); const money=n=>new Intl.NumberFormat('uz-UZ').format(n)+' so‘m';
 function toast(message){const el=$('toast');el.textContent=message;el.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add('hidden'),2600)}
