@@ -1,31 +1,1082 @@
-const $=id=>document.getElementById(id);const fmt=n=>new Intl.NumberFormat('uz-UZ').format(n)+' so‘m';
-let adminProducts=[
-{id:1,name:'Samsung A15 OLED displey',category:'Ekranlar',internalCode:'OLED-SAM-A15',brand:'Samsung',models:['Galaxy A15'],price:285000,cost:220000,status:'Omborda mavjud',hidden:false},
-{id:2,name:'iPhone 11 displey moduli',category:'Ekranlar',internalCode:'INC-IP11-01',brand:'Apple',models:['iPhone 11'],price:310000,cost:245000,status:'Omborda mavjud',hidden:false},
-{id:3,name:'Redmi Note 12 ekran',category:'Ekranlar',internalCode:'LCD-RED-N12',brand:'Xiaomi',models:['Redmi Note 12','Redmi Note 12 4G'],price:245000,cost:180000,status:'1 kunda do‘konga keladi',hidden:false},
-{id:4,name:'Samsung A12 batareyasi',category:'Batareyalar',internalCode:'BAT-SAM-A12',brand:'Samsung',models:['Galaxy A12'],price:95000,cost:60000,status:'Omborda mavjud',hidden:false},
-{id:5,name:'Redmi 10 batareyasi',category:'Batareyalar',internalCode:'BAT-RED-10',brand:'Xiaomi',models:['Redmi 10','Redmi 10 2022'],price:88000,cost:55000,status:'Omborda mavjud',hidden:false},
-{id:6,name:'iPhone XR orqa korpusi',category:'Orqa korpuslar',internalCode:'BACK-IP-XR',brand:'Apple',models:['iPhone XR'],price:115000,cost:70000,status:'Omborda mavjud',hidden:false},
-{id:7,name:'Samsung A32 ekran oynasi',category:'Ekran oynalari',internalCode:'GLASS-SAM-A32',brand:'Samsung',models:['Galaxy A32'],price:65000,cost:35000,status:'Omborda mavjud',hidden:false},
-{id:8,name:'iPhone 12 zaryad shleyfi',category:'Boshqa ehtiyot qismlar',internalCode:'FLEX-IP-12',brand:'Apple',models:['iPhone 12'],price:125000,cost:80000,status:'Omborda mavjud',hidden:false}
+
+/* =========================================================
+   PHONEPARTS — ADMIN PANEL
+   Supabase bilan ishlaydigan admin.js
+   ========================================================= */
+
+// 1. SUPABASE SOZLAMALARI
+const SUPABASE_URL = "https://tvbguhyuwkcozmuntcss.supabase.co";
+const SUPABASE_KEY = "sb_publishable_4gzBrF4DL7hvyllfyC80Eg_6uLaZO37";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+// 2. KATEGORIYALAR
+const categoryNames = {
+  screens: "Ekranlar",
+  batteries: "Batareyalar",
+  "back-covers": "Orqa korpuslar",
+  glass: "Ekran oynalari",
+  other: "Boshqa ehtiyot qismlar"
+};
+
+const categoryIds = Object.fromEntries(
+  Object.entries(categoryNames).map(([id, name]) => [name, id])
+);
+
+// 3. MA'LUMOTLAR
+let adminProducts = [];
+let brands = [];
+let orders = [];
+let customers = [];
+
+const statuses = [
+  "Yangi",
+  "Tasdiqlangan",
+  "Yuborilgan",
+  "Yakunlangan",
+  "Bekor qilingan"
 ];
-let brands=[{name:'Samsung',models:['Galaxy A12','Galaxy A15','Galaxy A32']},{name:'Apple',models:['iPhone 11','iPhone 12','iPhone XR']},{name:'Xiaomi',models:['Redmi 10','Redmi 10 2022','Redmi Note 12','Redmi Note 12 4G']}];
-let orders=[{id:'PP-20261018-003',customer:'Azizbek A.',phone:'+998 90 111 22 33',subtotal:425000,delivery:0,status:'Yangi'},{id:'PP-20261018-002',customer:'Malika S.',phone:'+998 91 222 33 44',subtotal:310000,delivery:25000,status:'Yig‘ilmoqda'},{id:'PP-20261018-001',customer:'Javohir T.',phone:'+998 93 333 44 55',subtotal:285000,delivery:0,status:'Tayyor'},{id:'PP-20261017-004',customer:'Dilshod K.',phone:'+998 94 444 55 66',subtotal:515000,delivery:20000,status:'Topshirildi'},{id:'PP-20261017-003',customer:'Azizbek A.',phone:'+998 90 111 22 33',subtotal:195000,delivery:0,status:'Yig‘ilmoqda'}];
-const customers=[{name:'Azizbek A.',phone:'+998 90 111 22 33',orders:4,payments:350000,debt:525000,status:'Faol'},{name:'Malika S.',phone:'+998 91 222 33 44',orders:2,payments:200000,debt:350000,status:'Faol'},{name:'Javohir T.',phone:'+998 93 333 44 55',orders:1,payments:285000,debt:0,status:'Faol'},{name:'Dilshod K.',phone:'+998 94 444 55 66',orders:3,payments:810000,debt:-50000,status:'Faol'}];
-const statuses=['Yangi','Yig‘ilmoqda','Kam tayyor','Tayyor','Jo‘natildi','Topshirildi','Bekor qilindi'];let nextId=9;
-function toast(msg){const el=$('adminToast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.add('hidden'),2600)}
-function navigate(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id==='page-'+page));document.querySelectorAll('.nav-item').forEach(b=>b.classList.toggle('active',b.dataset.page===page));const active=document.querySelector(`.nav-item[data-page="${page}"]`);$('pageCrumb').textContent=active?active.innerText.trim().replace(/^▦|^▣|^◇|^▤|^♙|^⇅|^▥|^⚙/,'').trim():page;$('sidebar')?.classList.remove('open');window.scrollTo(0,0)}
-document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>navigate(b.dataset.page));document.querySelectorAll('[data-goto]').forEach(b=>b.onclick=()=>navigate(b.dataset.goto));$('mobileMenu').onclick=()=>document.querySelector('.sidebar').classList.toggle('open');
-function renderAdminProducts(){const q=($('productSearch')?.value||'').toLowerCase();const cat=$('productCategory')?.value||'';const state=$('productState')?.value||'';const list=adminProducts.filter(p=>(!q||p.name.toLowerCase().includes(q)||p.internalCode.toLowerCase().includes(q))&&(!cat||p.category===cat)&&(!state||(state==='Yashirilgan'?p.hidden:p.status===state)));$('adminProductRows').innerHTML=list.map(p=>`<tr><td><div class="product-admin-name"><span class="mini-product">▣</span><span><strong>${p.name}</strong><small>Mahsulot ID: ${p.id}</small></span></div></td><td>${p.category}</td><td class="code">${p.internalCode}</td><td>${p.brand}: ${p.models.join(', ')}</td><td>${fmt(p.price)}</td><td><span class="pill ${p.hidden?'work-pill':p.status.startsWith('Ombor')?'ready-pill':'work-pill'}">${p.hidden?'Yashirilgan':p.status}</span></td><td><button class="table-action" data-edit-product="${p.id}">Tahrirlash</button><button class="table-action" data-hide-product="${p.id}">${p.hidden?'Faollashtirish':'Yashirish'}</button></td></tr>`).join('')||'<tr><td colspan="7">Mahsulot topilmadi.</td></tr>'}
-function renderBrands(){ $('brandAdminGrid').innerHTML=brands.map(b=>`<article class="brand-card"><h3>${b.name}</h3><p>${b.models.length} ta model</p><div>${b.models.map(m=>`<span class="model-tag">${m}</span>`).join('')}</div><button class="table-action" data-edit-brand="${b.name}">Modellarni boshqarish</button></article>`).join('')}
-function renderOrders(){const q=($('orderSearch')?.value||'').toLowerCase();const status=$('orderFilter')?.value||'';$('orderRows').innerHTML=orders.filter(o=>(!q||o.id.toLowerCase().includes(q)||o.customer.toLowerCase().includes(q))&&(!status||o.status===status)).map(o=>`<tr><td class="code">${o.id}</td><td>${o.customer}<br><small>${o.phone}</small></td><td>${fmt(o.subtotal)}</td><td>${o.delivery?fmt(o.delivery):'Belgilanmagan'}</td><td><span class="pill ${o.status==='Yangi'?'new-pill':o.status==='Topshirildi'?'ready-pill':'work-pill'}">${o.status}</span></td><td><select class="status-select" data-order-status="${o.id}">${statuses.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></td></tr>`).join('')||'<tr><td colspan="6">Buyurtma topilmadi.</td></tr>'}
-function renderCustomers(){const q=($('customerSearch')?.value||'').toLowerCase();$('customerRows').innerHTML=[...customers].sort((a,b)=>b.debt-a.debt).filter(c=>!q||c.name.toLowerCase().includes(q)||c.phone.includes(q)).map(c=>`<tr><td>${c.name}</td><td>${c.phone}</td><td>${c.orders}</td><td>${fmt(c.payments)}</td><td style="color:${c.debt>0?'#ff7676':'#9df56b'}">${c.debt>0?fmt(c.debt):c.debt<0?'+'+fmt(-c.debt):'0 so‘m'}</td><td><span class="pill ready-pill">${c.status}</span></td></tr>`).join('')}
-function renderStock(){$('stockRows').innerHTML=adminProducts.map(p=>`<tr><td>${p.name}</td><td>${p.brand} ${p.models.join(', ')}</td><td>${p.id===1?7:p.id===2?3:p.id===3?0:p.id===4?12:p.id===5?4:p.id===6?5:p.id===7?10:2} dona</td><td>${fmt(p.cost)}</td><td><span class="pill ${p.status.startsWith('Ombor')?'ready-pill':'work-pill'}">${p.status}</span></td></tr>`).join('')}
-function openForm(title,body,onSave){$('formContent').innerHTML=`<h2>${title}</h2>${body}<div class="form-actions"><button class="secondary" type="button" id="cancelForm">Bekor qilish</button><button class="primary" type="button" id="saveForm">Saqlash</button></div>`;$('formBackdrop').classList.remove('hidden');$('cancelForm').onclick=closeForm;$('saveForm').onclick=()=>{if(onSave())closeForm()}}
-function closeForm(){$('formBackdrop').classList.add('hidden')}$('closeForm').onclick=closeForm;$('formBackdrop').onclick=e=>{if(e.target===$('formBackdrop'))closeForm()};
-function productForm(p){const editing=!!p;const brandsOpts=brands.map(b=>`<option ${p?.brand===b.name?'selected':''}>${b.name}</option>`).join('');openForm(editing?'Mahsulotni tahrirlash':'Yangi mahsulot qo‘shish',`<div class="form-grid"><label class="form-field">Kategoriya<select id="fCategory">${['Ekranlar','Batareyalar','Orqa korpuslar','Ekran oynalari','Boshqa ehtiyot qismlar'].map(c=>`<option ${p?.category===c?'selected':''}>${c}</option>`).join('')}</select></label><label class="form-field">Telefon markasi<select id="fBrand">${brandsOpts}</select></label><label class="form-field">Telefon modeli<input id="fModels" value="${p?.models.join(', ')||''}" placeholder="Galaxy A15, Galaxy A15 5G" required></label><label class="form-field">Mahsulot nomi<input id="fName" value="${p?.name||''}" required></label><label class="form-field">Ichki kod / asl nomi<input id="fCode" value="${p?.internalCode||''}" required placeholder="Masalan: OLED-SAM-A15"></label><label class="form-field">Sotuv narxi (so‘m)<input id="fPrice" type="number" min="1" value="${p?.price||''}" required></label><label class="form-field">Tannarx (so‘m)<input id="fCost" type="number" min="0" value="${p?.cost||''}" required></label><label class="form-field">Mavjudlik<select id="fStatus"><option ${p?.status==='Omborda mavjud'?'selected':''}>Omborda mavjud</option><option ${p?.status==='1 kunda do‘konga keladi'?'selected':''}>1 kunda do‘konga keladi</option></select></label><label class="form-field full-field">Mahsulot rasmlari<input id="fImages" type="file" accept="image/*" multiple><small>Rasm(lar) tanlash mumkin. Ushbu namuna rasm fayllarini serverga saqlamaydi.</small></label><label class="form-field full-field">Qisqacha tavsif<textarea id="fDescription" rows="2">${p?.description||''}</textarea></label></div><p class="note">Ekran uchun bir xil ichki kodni bir nechta marka/modelga moslashtirish mumkin. Real tizimda bu variantlar bitta mahsulot yozuviga bog‘lanadi.</p>`,()=>{const name=$('fName').value.trim(),code=$('fCode').value.trim(),price=Number($('fPrice').value),cost=Number($('fCost').value),models=$('fModels').value.split(',').map(x=>x.trim()).filter(Boolean);if(!name||!code||!models.length||price<=0||cost<0){toast('Majburiy maydonlarni to‘g‘ri to‘ldiring');return false}const duplicate=adminProducts.find(x=>x.internalCode.toLowerCase()===code.toLowerCase()&&x.id!==p?.id);if(duplicate&&$('fCategory').value==='Ekranlar'){toast('Bu ichki kod mavjud. Yangi mahsulot emas, mos modelni shu mahsulotga qo‘shing.');return false}const item={id:p?.id||nextId++,name,category:$('fCategory').value,internalCode:code,brand:$('fBrand').value,models,price,cost,status:$('fStatus').value,hidden:p?.hidden||false};if(editing)adminProducts=adminProducts.map(x=>x.id===p.id?item:x);else adminProducts.unshift(item);const brand=brands.find(b=>b.name===item.brand);if(brand)models.forEach(m=>{if(!brand.models.includes(m))brand.models.push(m)});renderAdminProducts();renderBrands();renderStock();toast('Namuna ko‘rinishida saqlandi. Haqiqiy saqlash uchun backend kerak.');return true})}
-$('newProductBtn').onclick=()=>productForm(null);$('adminProductRows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-product]');const hide=e.target.closest('[data-hide-product]');if(edit)productForm(adminProducts.find(p=>p.id===Number(edit.dataset.editProduct)));if(hide){const p=adminProducts.find(p=>p.id===Number(hide.dataset.hideProduct));p.hidden=!p.hidden;renderAdminProducts();toast(p.hidden?'Mahsulot yashirildi':'Mahsulot faollashtirildi')}});['productSearch','productCategory','productState'].forEach(id=>$(id).addEventListener(id==='productSearch'?'input':'change',renderAdminProducts));$('orderRows').addEventListener('change',e=>{const s=e.target.closest('[data-order-status]');if(!s)return;const order=orders.find(o=>o.id===s.dataset.orderStatus);if(order){order.status=s.value;renderOrders();toast('Buyurtma holati demo rejimida o‘zgartirildi')}});$('orderSearch').addEventListener('input',renderOrders);$('orderFilter').addEventListener('change',renderOrders);$('customerSearch').addEventListener('input',renderCustomers);
-$('addBrandBtn').onclick=()=>openForm('Telefon markasini qo‘shish','<label class="form-field">Marka nomi<input id="brandName" placeholder="Masalan: OPPO" required></label><label class="form-field">Modellar (vergul bilan ajrating)<input id="brandModels" placeholder="A78, Reno 11"></label>',()=>{const name=$('brandName').value.trim();if(!name){toast('Marka nomini kiriting');return false}if(brands.some(b=>b.name.toLowerCase()===name.toLowerCase())){toast('Bu marka allaqachon mavjud');return false}brands.push({name,models:$('brandModels').value.split(',').map(s=>s.trim()).filter(Boolean)});renderBrands();toast('Marka demo rejimida qo‘shildi');return true});$('brandAdminGrid').addEventListener('click',e=>{const b=e.target.closest('[data-edit-brand]');if(!b)return;const brand=brands.find(x=>x.name===b.dataset.editBrand);openForm(brand.name+' — modellarni boshqarish',`<label class="form-field">Modellar ro‘yxati (har birini vergul bilan ajrating)<textarea id="editModels" rows="4">${brand.models.join(', ')}</textarea></label>`,()=>{brand.models=$('editModels').value.split(',').map(s=>s.trim()).filter(Boolean);renderBrands();toast('Modellar demo rejimida yangilandi');return true})});
-$('stockEntryBtn').onclick=()=>openForm('Omborga kirim kiritish','<label class="form-field">Mahsulot<select id="stockProduct">'+adminProducts.map(p=>`<option value="${p.id}">${p.name}</option>`).join('')+'</select></label><div class="form-grid"><label class="form-field">Miqdor<input id="stockQty" type="number" min="1" value="1"></label><label class="form-field">Bir dona tannarxi (so‘m)<input id="stockCost" type="number" min="0" value="0"></label></div><label class="form-field">Kirim izohi<input id="stockNote" placeholder="Ixtiyoriy"></label>',()=>{if(Number($('stockQty').value)<1||Number($('stockCost').value)<0){toast('Miqdor yoki tannarxni tekshiring');return false}toast('Kirim demo rejimida qayd etildi; haqiqiy ombor yangilanmadi');return true});
-$('applyReport').onclick=()=>toast('Namuna hisobot. Haqiqiy sanali hisoblash bazaga ulanganda ishlaydi');$('exportCsv').onclick=()=>{const rows=[['Mahsulot','Kategoriya','Ichki kod','Marka','Modellar','Sotuv narxi','Tannarx'],...adminProducts.map(p=>[p.name,p.category,p.internalCode,p.brand,p.models.join(' / '),p.price,p.cost])];const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));const a=document.createElement('a');a.href=url;a.download='phoneparts-mahsulotlar.csv';a.click();URL.revokeObjectURL(url)};
-$('bannerSettingsBtn').onclick=()=>toast('Bannerlarni boshqarish uchun serverga rasm yuklash va bosh admin ruxsatlari kerak');$('employeeSettingsBtn').onclick=()=>toast('Xodimlar va ruxsatlar backend qismida sozlanadi');$('deliverySettingsBtn').onclick=()=>toast('Yetkazib berish hududlari backend qismida boshqariladi');$('todayDate').textContent=new Date().toLocaleDateString('uz-UZ',{year:'numeric',month:'long',day:'numeric'});renderAdminProducts();renderBrands();renderOrders();renderCustomers();renderStock();
+
+let nextId = 1;
+let stockEntryProductId = null;
+
+const $ = (selector) => document.querySelector(selector);
+
+const fmt = (value) =>
+  new Intl.NumberFormat("uz-UZ").format(Number(value) || 0) + " so'm";
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;"
+  })[char]);
+}
+
+function toast(message, type = "success") {
+  const el = $("#adminToast");
+  if (!el) {
+    console.log(message);
+    return;
+  }
+
+  el.textContent = message;
+  el.className = "admin-toast show " + type;
+
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => {
+    el.classList.remove("show");
+  }, 3500);
+}
+
+function showError(error, prefix = "Xatolik") {
+  console.error(prefix, error);
+  toast(`${prefix}: ${error?.message || error}`, "error");
+}
+
+function categoryId(value) {
+  if (categoryIds[value]) return categoryIds[value];
+  if (categoryNames[value]) return value;
+  return value || "other";
+}
+
+function categoryLabel(value) {
+  return categoryNames[value] || value || "Boshqa ehtiyot qismlar";
+}
+
+// 4. SUPABASE'DAN MAHSULOTLARNI YUKLASH
+async function loadAdminProducts() {
+  const { data, error } = await supabaseClient
+    .from("products")
+    .select(`
+      *,
+      product_compatibility (
+        phone_models (
+          name,
+          brands (
+            name
+          )
+        )
+      )
+    `)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    showError(error, "Mahsulotlarni yuklab bo'lmadi");
+    return;
+  }
+
+  adminProducts = (data || []).map((p) => {
+    const compatibleModels = (p.product_compatibility || [])
+      .map((item) => item.phone_models)
+      .filter(Boolean);
+
+    const modelNames = compatibleModels.map((m) => m.name);
+    const brandNames = [
+      ...new Set(
+        compatibleModels
+          .map((m) => m.brands?.name)
+          .filter(Boolean)
+      )
+    ];
+
+    return {
+      id: p.id,
+      name: p.name || "",
+      category: categoryLabel(p.category),
+      categoryId: p.category,
+      internalCode: p.internal_code || "",
+      brand: brandNames.join(", "),
+      models: modelNames,
+      price: Number(p.price) || 0,
+      cost: Number(p.cost_price) || 0,
+      stock: Number(p.stock) || 0,
+      status: p.is_active ? "Faol" : "Yashirin",
+      hidden: !p.is_active,
+      image: p.image_url || "",
+      description: p.description || "",
+      createdAt: p.created_at
+    };
+  });
+
+  nextId = Math.max(
+    1,
+    ...adminProducts.map((p) => Number(p.id) || 0)
+  ) + 1;
+
+  renderAdminProducts();
+  renderStock();
+  refreshStockProductOptions();
+}
+
+// 5. BRЕNDLAR VA MODELLARNI YUKLASH
+async function loadBrands() {
+  const { data: brandData, error: brandError } = await supabaseClient
+    .from("brands")
+    .select("id, name")
+    .order("name");
+
+  if (brandError) {
+    showError(brandError, "Brendlarni yuklashda xatolik");
+    return;
+  }
+
+  const { data: modelData, error: modelError } = await supabaseClient
+    .from("phone_models")
+    .select("id, name, brand_id")
+    .order("name");
+
+  if (modelError) {
+    showError(modelError, "Modellarni yuklashda xatolik");
+    return;
+  }
+
+  brands = (brandData || []).map((brand) => ({
+    id: brand.id,
+    name: brand.name,
+    models: (modelData || [])
+      .filter((model) => model.brand_id === brand.id)
+      .map((model) => model.name)
+  }));
+
+  renderBrands();
+}
+
+// 6. MAHSULOTLAR RO'YXATI
+function renderAdminProducts() {
+  const tbody = $("#adminProductRows");
+  if (!tbody) return;
+
+  const search = ($("#productSearch")?.value || "").toLowerCase().trim();
+  const selectedCategory = $("#productCategory")?.value || "";
+  const selectedState = $("#productState")?.value || "";
+
+  const filtered = adminProducts.filter((p) => {
+    const searchText = [
+      p.name,
+      p.internalCode,
+      p.brand,
+      p.models.join(" ")
+    ].join(" ").toLowerCase();
+
+    const matchesSearch = !search || searchText.includes(search);
+    const matchesCategory =
+      !selectedCategory ||
+      p.categoryId === selectedCategory ||
+      p.category === selectedCategory;
+    const matchesState =
+      !selectedState ||
+      (selectedState === "Faol" && !p.hidden) ||
+      (selectedState === "Yashirin" && p.hidden) ||
+      p.status === selectedState;
+
+    return matchesSearch && matchesCategory && matchesState;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align:center;padding:24px">
+          Mahsulot topilmadi
+        </td>
+      </tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((p) => `
+    <tr>
+      <td>${escapeHTML(p.id)}</td>
+      <td>
+        <strong>${escapeHTML(p.name)}</strong>
+        <div class="muted">${escapeHTML(p.internalCode)}</div>
+      </td>
+      <td>${escapeHTML(p.category)}</td>
+      <td>${escapeHTML(p.brand || "—")}</td>
+      <td>${escapeHTML(p.models.join(", ") || "—")}</td>
+      <td>${fmt(p.price)}</td>
+      <td>${fmt(p.cost)}</td>
+      <td>${p.stock}</td>
+      <td>
+        <span class="${p.hidden ? "status-hidden" : "status-active"}">
+          ${p.hidden ? "Yashirin" : "Faol"}
+        </span>
+      </td>
+      <td>
+        <button type="button" data-edit-product="${p.id}">Tahrirlash</button>
+        <button type="button" data-toggle-product="${p.id}">
+          ${p.hidden ? "Faollashtirish" : "Yashirish"}
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+// 7. BRЕNDLAR RO'YXATI
+function renderBrands() {
+  const container = $("#brandAdminGrid");
+  if (!container) return;
+
+  if (!brands.length) {
+    container.innerHTML = "<p>Hozircha brendlar mavjud emas.</p>";
+    return;
+  }
+
+  container.innerHTML = brands.map((b) => `
+    <div class="brand-card">
+      <strong>${escapeHTML(b.name)}</strong>
+      <p>${b.models.length} ta model</p>
+      <div>${escapeHTML(b.models.join(", ") || "Modellar kiritilmagan")}</div>
+      <button type="button" data-edit-brand="${b.id}">Tahrirlash</button>
+    </div>
+  `).join("");
+}
+
+// 8. BUYURTMALAR
+// Buyurtma yaratish va ruxsatlarni keyinchalik xavfsiz backend orqali
+// ulash kerak. Bu funksiya mavjud buyurtmalarni Supabase'dan o'qiydi.
+async function loadOrders() {
+  const { data, error } = await supabaseClient
+    .from("orders")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    showError(error, "Buyurtmalarni yuklashda xatolik");
+    return;
+  }
+
+  orders = (data || []).map((o) => ({
+    id: o.id,
+    orderNumber: o.order_number || o.id,
+    customer: o.customer_name || "",
+    phone: o.phone || "",
+    address: o.address || "",
+    status: mapOrderStatus(o.status),
+    total: Number(o.total) || 0,
+    createdAt: o.created_at
+  }));
+
+  renderOrders();
+}
+
+function mapOrderStatus(value) {
+  const map = {
+    new: "Yangi",
+    confirmed: "Tasdiqlangan",
+    shipped: "Yuborilgan",
+    completed: "Yakunlangan",
+    cancelled: "Bekor qilingan"
+  };
+  return map[value] || value || "Yangi";
+}
+
+function dbOrderStatus(value) {
+  const map = {
+    "Yangi": "new",
+    "Tasdiqlangan": "confirmed",
+    "Yuborilgan": "shipped",
+    "Yakunlangan": "completed",
+    "Bekor qilingan": "cancelled"
+  };
+  return map[value] || value;
+}
+
+function renderOrders() {
+  const tbody = $("#orderRows");
+  if (!tbody) return;
+
+  const search = ($("#orderSearch")?.value || "").toLowerCase().trim();
+  const filter = $("#orderFilter")?.value || "";
+
+  const filtered = orders.filter((o) => {
+    const text = [
+      o.orderNumber,
+      o.customer,
+      o.phone
+    ].join(" ").toLowerCase();
+
+    return (!search || text.includes(search)) &&
+      (!filter || o.status === filter);
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="8" style="text-align:center;padding:24px">
+        Buyurtmalar topilmadi
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((o) => `
+    <tr>
+      <td>${escapeHTML(o.orderNumber)}</td>
+      <td>${escapeHTML(o.customer)}</td>
+      <td>${escapeHTML(o.phone)}</td>
+      <td>${escapeHTML(o.address)}</td>
+      <td>${fmt(o.total)}</td>
+      <td>
+        <select data-order-status="${o.id}">
+          ${statuses.map((s) => `
+            <option value="${escapeHTML(s)}"
+              ${s === o.status ? "selected" : ""}>
+              ${escapeHTML(s)}
+            </option>
+          `).join("")}
+        </select>
+      </td>
+      <td>${o.createdAt ? new Date(o.createdAt).toLocaleDateString("uz-UZ") : "—"}</td>
+    </tr>
+  `).join("");
+}
+
+async function updateOrderStatus(id, status) {
+  const { error } = await supabaseClient
+    .from("orders")
+    .update({ status: dbOrderStatus(status) })
+    .eq("id", id);
+
+  if (error) {
+    showError(error, "Buyurtma holatini o'zgartirib bo'lmadi");
+    await loadOrders();
+    return;
+  }
+
+  toast("Buyurtma holati saqlandi");
+  await loadOrders();
+}
+
+// 9. MIJOZLAR
+// profiles jadvali hozir faqat user_id va role saqlaydi.
+// Telefon va ism orders jadvalidan olinadi.
+async function loadCustomers() {
+  const tbody = $("#customerRows");
+  if (!tbody) return;
+
+  const { data, error } = await supabaseClient
+    .from("orders")
+    .select("customer_name, phone, address, created_at")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    showError(error, "Mijozlarni yuklashda xatolik");
+    return;
+  }
+
+  const unique = new Map();
+
+  (data || []).forEach((o) => {
+    const key = o.phone || o.customer_name;
+    if (key && !unique.has(key)) unique.set(key, o);
+  });
+
+  customers = Array.from(unique.values());
+
+  renderCustomers();
+}
+
+function renderCustomers() {
+  const tbody = $("#customerRows");
+  if (!tbody) return;
+
+  const search = ($("#customerSearch")?.value || "").toLowerCase().trim();
+  const filtered = customers.filter((c) =>
+    [c.customer_name, c.phone, c.address]
+      .join(" ").toLowerCase().includes(search)
+  );
+
+  if (!filtered.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="5" style="text-align:center;padding:24px">
+        Mijozlar topilmadi
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((c) => `
+    <tr>
+      <td>${escapeHTML(c.customer_name || "—")}</td>
+      <td>${escapeHTML(c.phone || "—")}</td>
+      <td>${escapeHTML(c.address || "—")}</td>
+      <td>${c.created_at ? new Date(c.created_at).toLocaleDateString("uz-UZ") : "—"}</td>
+    </tr>
+  `).join("");
+}
+
+// 10. OMBOR
+function renderStock() {
+  const tbody = $("#stockRows");
+  if (!tbody) return;
+
+  if (!adminProducts.length) {
+    tbody.innerHTML = `
+      <tr><td colspan="6" style="text-align:center;padding:24px">
+        Omborda mahsulot yo'q
+      </td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = adminProducts.map((p) => `
+    <tr>
+      <td>${escapeHTML(p.name)}</td>
+      <td>${escapeHTML(p.internalCode)}</td>
+      <td>${p.stock}</td>
+      <td>${fmt(p.cost)}</td>
+      <td>${fmt(p.price)}</td>
+      <td>
+        <button type="button" data-stock-product="${p.id}">
+          Kirim qilish
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+function refreshStockProductOptions() {
+  const select = $("#stockProduct");
+  if (!select) return;
+
+  select.innerHTML = `
+    <option value="">Mahsulotni tanlang</option>
+    ${adminProducts.map((p) => `
+      <option value="${p.id}">
+        ${escapeHTML(p.name)} — ${escapeHTML(p.internalCode)}
+      </option>
+    `).join("")}
+  `;
+}
+
+// 11. MODAL OCHISH VA YOPISH
+function openForm(title, body, onSave) {
+  const backdrop = $("#formBackdrop");
+  const content = $("#formContent");
+
+  if (!backdrop || !content) {
+    toast("Forma elementlari HTML'da topilmadi", "error");
+    return;
+  }
+
+  content.innerHTML = `
+    <div class="form-header">
+      <h2>${escapeHTML(title)}</h2>
+      <button type="button" id="modalCloseBtn">✕</button>
+    </div>
+    <form id="adminDynamicForm">
+      ${body}
+      <div class="form-actions">
+        <button type="button" id="cancelDynamicForm">Bekor qilish</button>
+        <button type="submit">Saqlash</button>
+      </div>
+    </form>
+  `;
+
+  backdrop.classList.add("open");
+  backdrop.style.display = "flex";
+
+  const close = () => {
+    backdrop.classList.remove("open");
+    backdrop.style.display = "none";
+  };
+
+  $("#modalCloseBtn")?.addEventListener("click", close);
+  $("#cancelDynamicForm")?.addEventListener("click", close);
+
+  $("#adminDynamicForm")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submit = event.submitter;
+    if (submit) submit.disabled = true;
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      await onSave(formData);
+      close();
+    } catch (error) {
+      showError(error, "Saqlashda xatolik");
+    } finally {
+      if (submit) submit.disabled = false;
+    }
+  });
+}
+
+function closeForm() {
+  const backdrop = $("#formBackdrop");
+  if (!backdrop) return;
+  backdrop.classList.remove("open");
+  backdrop.style.display = "none";
+}
+
+$("#closeForm")?.addEventListener("click", closeForm);
+$("#formBackdrop")?.addEventListener("click", (event) => {
+  if (event.target === $("#formBackdrop")) closeForm();
+});
+
+// 12. MAHSULOT FORMASI
+function productForm(p = null) {
+  const isEdit = Boolean(p);
+
+  const categoryOptions = Object.entries(categoryNames).map(([id, name]) => `
+    <option value="${id}" ${
+      categoryId(p?.categoryId || p?.category) === id ? "selected" : ""
+    }>${escapeHTML(name)}</option>
+  `).join("");
+
+  const brandOptions = brands.map((b) => `
+    <option value="${escapeHTML(b.name)}"
+      ${p?.brand === b.name ? "selected" : ""}>
+      ${escapeHTML(b.name)}
+    </option>
+  `).join("");
+
+  openForm(isEdit ? "Mahsulotni tahrirlash" : "Yangi mahsulot", `
+    <label>Kategoriya</label>
+    <select name="category" required>${categoryOptions}</select>
+
+    <label>Brend</label>
+    <select name="brand">
+      <option value="">Brend tanlanmagan</option>
+      ${brandOptions}
+    </select>
+
+    <label>Telefon modellari (vergul bilan ajrating)</label>
+    <input name="models" value="${escapeHTML((p?.models || []).join(", "))}"
+      placeholder="Galaxy A15, Galaxy A16">
+
+    <label>Mahsulot nomi</label>
+    <input name="name" required value="${escapeHTML(p?.name || "")}">
+
+    <label>Ichki kod</label>
+    <input name="internalCode" required
+      value="${escapeHTML(p?.internalCode || "")}">
+
+    <label>Sotuv narxi (so'm)</label>
+    <input name="price" type="number" min="0" required
+      value="${p?.price ?? ""}">
+
+    <label>Tannarx (so'm)</label>
+    <input name="cost" type="number" min="0" required
+      value="${p?.cost ?? ""}">
+
+    <label>Ombordagi soni</label>
+    <input name="stock" type="number" min="0" required
+      value="${p?.stock ?? 0}">
+
+    <label>Rasm URL manzili (ixtiyoriy)</label>
+    <input name="image" type="url"
+      value="${escapeHTML(p?.image || "")}"
+      placeholder="https://...">
+
+    <label>Tavsif</label>
+    <textarea name="description">${escapeHTML(p?.description || "")}</textarea>
+
+    <label>Holati</label>
+    <select name="isActive">
+      <option value="true" ${!p?.hidden ? "selected" : ""}>Faol</option>
+      <option value="false" ${p?.hidden ? "selected" : ""}>Yashirin</option>
+    </select>
+  `, async (fd) => {
+    const name = String(fd.get("name") || "").trim();
+    const internalCode = String(fd.get("internalCode") || "").trim();
+    const category = String(fd.get("category") || "other");
+    const price = Number(fd.get("price"));
+    const cost = Number(fd.get("cost"));
+    const stock = Number(fd.get("stock"));
+    const image = String(fd.get("image") || "").trim();
+    const description = String(fd.get("description") || "").trim();
+    const brandName = String(fd.get("brand") || "").trim();
+    const modelNames = String(fd.get("models") || "")
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const isActive = fd.get("isActive") === "true";
+
+    if (!name || !internalCode) {
+      throw new Error("Mahsulot nomi va ichki kodni kiriting.");
+    }
+
+    if (
+      !Number.isFinite(price) || price < 0 ||
+      !Number.isFinite(cost) || cost < 0 ||
+      !Number.isInteger(stock) || stock < 0
+    ) {
+      throw new Error("Narx, tannarx va ombor sonini tekshiring.");
+    }
+
+    // Ichki kod takrorlanmasligini tekshirish
+    const duplicate = adminProducts.find((item) =>
+      item.internalCode.toLowerCase() === internalCode.toLowerCase() &&
+      item.categoryId === category &&
+      String(item.id) !== String(p?.id ?? "")
+    );
+
+    if (duplicate) {
+      throw new Error("Bu kategoriya ichida ushbu ichki kod mavjud.");
+    }
+
+    const payload = {
+      name,
+      internal_code: internalCode,
+      category,
+      price,
+      cost_price: cost,
+      stock,
+      image_url: image || null,
+      description: description || null,
+      is_active: isActive
+    };
+
+    let productId = p?.id;
+
+    if (isEdit) {
+      const { error } = await supabaseClient
+        .from("products")
+        .update(payload)
+        .eq("id", productId);
+
+      if (error) throw error;
+    } else {
+      const { data, error } = await supabaseClient
+        .from("products")
+        .insert(payload)
+        .select("id")
+        .single();
+
+      if (error) throw error;
+      productId = data.id;
+    }
+
+    // Brend va telefon modellari bog'lanishi
+    if (brandName) {
+      const brandId = await ensureBrand(brandName);
+
+      const modelIds = [];
+      for (const modelName of [...new Set(modelNames)]) {
+        const modelId = await ensureModel(brandId, modelName);
+        modelIds.push(modelId);
+      }
+
+      // Faqat shu mahsulotning oldingi mosliklarini o'chirish
+      const { error: deleteError } = await supabaseClient
+        .from("product_compatibility")
+        .delete()
+        .eq("product_id", productId);
+
+      if (deleteError) throw deleteError;
+
+      if (modelIds.length) {
+        const rows = modelIds.map((modelId) => ({
+          product_id: productId,
+          model_id: modelId
+        }));
+
+        const { error: insertError } = await supabaseClient
+          .from("product_compatibility")
+          .insert(rows);
+
+        if (insertError) throw insertError;
+      }
+    } else if (isEdit) {
+      // Brend tanlanmagan bo'lsa, eski mosliklarni olib tashlash
+      const { error } = await supabaseClient
+        .from("product_compatibility")
+        .delete()
+        .eq("product_id", productId);
+
+      if (error) throw error;
+    }
+
+    await Promise.all([loadAdminProducts(), loadBrands()]);
+    toast(isEdit ? "Mahsulot yangilandi" : "Mahsulot qo'shildi");
+  });
+}
+
+// 13. BRЕND/MODELNI BAZADA TOPISH YOKI YARATISH
+async function ensureBrand(name) {
+  const { data: existing, error: findError } = await supabaseClient
+    .from("brands")
+    .select("id")
+    .eq("name", name)
+    .maybeSingle();
+
+  if (findError) throw findError;
+  if (existing) return existing.id;
+
+  const { data, error } = await supabaseClient
+    .from("brands")
+    .insert({ name })
+    .select("id")
+    .single();
+
+  if (error) throw error;
+  return data.id;
+}
+
+async function ensureModel(brandId, name) {
+  const { data: existing, error: findError } = await supabaseClient
+    .from("phone_models")
+    .select("id")
+    .eq("brand_id", brandId)
+    .eq("name", name)
+    .maybeSingle();
+
+  if (findError) throw findError;
+  if (existing) return existing.id;
+
+  const { data, error } = await supabaseClient
+    .from("phone_models")
+    .insert({ brand_id: brandId, name })
+    .select("id")
+    .single();
+
+  if (error) throw error;
+  return data.id;
+}
+
+// 14. MAHSULOTNI YASHIRISH / FAOLLASHTIRISH
+async function toggleProduct(id) {
+  const p = adminProducts.find((item) => String(item.id) === String(id));
+  if (!p) return;
+
+  const newActiveState = p.hidden;
+
+  const { error } = await supabaseClient
+    .from("products")
+    .update({ is_active: newActiveState })
+    .eq("id", id);
+
+  if (error) {
+    showError(error, "Mahsulot holatini o'zgartirib bo'lmadi");
+    return;
+  }
+
+  toast(newActiveState ? "Mahsulot faollashtirildi" : "Mahsulot yashirildi");
+  await loadAdminProducts();
+}
+
+// 15. BRЕND QO'SHISH / TAHRIRLASH
+function brandForm(brand = null) {
+  openForm(brand ? "Brendni tahrirlash" : "Yangi brend", `
+    <label>Brend nomi</label>
+    <input name="name" required value="${escapeHTML(brand?.name || "")}">
+
+    <label>Telefon modellari (vergul bilan ajrating)</label>
+    <textarea name="models" placeholder="Galaxy A15, Galaxy A16">${
+      escapeHTML((brand?.models || []).join(", "))
+    }</textarea>
+  `, async (fd) => {
+    const name = String(fd.get("name") || "").trim();
+    const modelNames = [...new Set(
+      String(fd.get("models") || "")
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    )];
+
+    if (!name) throw new Error("Brend nomini kiriting.");
+
+    let brandId = brand?.id;
+
+    if (brandId) {
+      const { error } = await supabaseClient
+        .from("brands")
+        .update({ name })
+        .eq("id", brandId);
+
+      if (error) throw error;
+    } else {
+      brandId = await ensureBrand(name);
+    }
+
+    for (const modelName of modelNames) {
+      await ensureModel(brandId, modelName);
+    }
+
+    await loadBrands();
+    toast(brand ? "Brend yangilandi" : "Brend qo'shildi");
+  });
+}
+
+// 16. OMBORGA KIRIM
+function stockEntryForm(product = null) {
+  const options = adminProducts.map((p) => `
+    <option value="${p.id}"
+      ${String(p.id) === String(product?.id) ? "selected" : ""}>
+      ${escapeHTML(p.name)} (${escapeHTML(p.internalCode)}) — qoldiq: ${p.stock}
+    </option>
+  `).join("");
+
+  openForm("Omborga kirim", `
+    <label>Mahsulot</label>
+    <select name="productId" required>
+      <option value="">Mahsulotni tanlang</option>
+      ${options}
+    </select>
+
+    <label>Kirim miqdori</label>
+    <input name="quantity" type="number" min="1" step="1" required>
+
+    <label>Yangi tannarx (ixtiyoriy)</label>
+    <input name="cost" type="number" min="0" placeholder="Bo'sh qoldirilsa eski tannarx saqlanadi">
+  `, async (fd) => {
+    const id = fd.get("productId");
+    const quantity = Number(fd.get("quantity"));
+    const newCostText = String(fd.get("cost") || "").trim();
+    const p = adminProducts.find((item) => String(item.id) === String(id));
+
+    if (!p) throw new Error("Mahsulotni tanlang.");
+    if (!Number.isInteger(quantity) || quantity <= 0) {
+      throw new Error("Kirim miqdori musbat butun son bo'lishi kerak.");
+    }
+
+    const payload = { stock: p.stock + quantity };
+
+    if (newCostText !== "") {
+      const newCost = Number(newCostText);
+      if (!Number.isFinite(newCost) || newCost < 0) {
+        throw new Error("Tannarx noto'g'ri.");
+      }
+      payload.cost_price = newCost;
+    }
+
+    const { error } = await supabaseClient
+      .from("products")
+      .update(payload)
+      .eq("id", id);
+
+    if (error) throw error;
+
+    await loadAdminProducts();
+    toast("Ombor kirimi saqlandi");
+  });
+}
+
+// 17. NAVIGATSIYA
+function navigate(page, title) {
+  document.querySelectorAll("[data-page]").forEach((el) => {
+    el.classList.toggle("active", el.dataset.page === page);
+  });
+
+  document.querySelectorAll(".admin-page").forEach((el) => {
+    el.classList.toggle("active", el.id === page);
+  });
+
+  const crumb = $("#pageCrumb");
+  if (crumb && title) crumb.textContent = title;
+
+  $("#sidebar")?.classList.remove("open");
+}
+
+document.querySelectorAll("[data-page-link]").forEach((el) => {
+  el.addEventListener("click", () => {
+    navigate(el.dataset.pageLink, el.dataset.title || "");
+  });
+});
+
+$("#mobileMenu")?.addEventListener("click", () => {
+  $("#sidebar")?.classList.toggle("open");
+});
+
+// 18. TUGMALAR VA QIDIRUVLAR
+$("#newProductBtn")?.addEventListener("click", () => productForm());
+
+$("#addBrandBtn")?.addEventListener("click", () => brandForm());
+
+$("#stockEntryBtn")?.addEventListener("click", () => stockEntryForm());
+
+$("#productSearch")?.addEventListener("input", renderAdminProducts);
+$("#productCategory")?.addEventListener("change", renderAdminProducts);
+$("#productState")?.addEventListener("change", renderAdminProducts);
+
+$("#orderSearch")?.addEventListener("input", renderOrders);
+$("#orderFilter")?.addEventListener("change", renderOrders);
+$("#customerSearch")?.addEventListener("input", renderCustomers);
+
+$("#adminProductRows")?.addEventListener("click", (event) => {
+  const editButton = event.target.closest("[data-edit-product]");
+  const toggleButton = event.target.closest("[data-toggle-product]");
+
+  if (editButton) {
+    const p = adminProducts.find(
+      (item) => String(item.id) === editButton.dataset.editProduct
+    );
+    if (p) productForm(p);
+  }
+
+  if (toggleButton) {
+    toggleProduct(toggleButton.dataset.toggleProduct);
+  }
+});
+
+$("#brandAdminGrid")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-edit-brand]");
+  if (!button) return;
+
+  const brand = brands.find(
+    (item) => String(item.id) === button.dataset.editBrand
+  );
+  if (brand) brandForm(brand);
+});
+
+$("#stockRows")?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-stock-product]");
+  if (!button) return;
+
+  const p = adminProducts.find(
+    (item) => String(item.id) === button.dataset.stockProduct
+  );
+  if (p) stockEntryForm(p);
+});
+
+$("#orderRows")?.addEventListener("change", (event) => {
+  const select = event.target.closest("[data-order-status]");
+  if (!select) return;
+
+  updateOrderStatus(select.dataset.orderStatus, select.value);
+});
+
+// 19. HISOBOT
+$("#applyReport")?.addEventListener("click", () => {
+  const reportArea = $("#reportResult");
+  if (!reportArea) {
+    toast("Hisobot natijasini ko'rsatadigan HTML elementi topilmadi.");
+    return;
+  }
+
+  const activeProducts = adminProducts.filter((p) => !p.hidden);
+  const totalStock = activeProducts.reduce((sum, p) => sum + p.stock, 0);
+  const stockCost = activeProducts.reduce(
+    (sum, p) => sum + p.stock * p.cost, 0
+  );
+  const stockRetail = activeProducts.reduce(
+    (sum, p) => sum + p.stock * p.price, 0
+  );
+
+  reportArea.innerHTML = `
+    <p>Faol mahsulotlar: <strong>${activeProducts.length}</strong></p>
+    <p>Jami ombor qoldig'i: <strong>${totalStock}</strong></p>
+    <p>Ombor tannarxi: <strong>${fmt(stockCost)}</strong></p>
+    <p>Taxminiy sotuv qiymati: <strong>${fmt(stockRetail)}</strong></p>
+  `;
+});
+
+// 20. CSV EKSPORT
+$("#exportCsv")?.addEventListener("click", () => {
+  const rows = [
+    ["ID", "Nomi", "Kategoriya", "Ichki kod", "Brend", "Modellar",
+      "Sotuv narxi", "Tannarx", "Ombor", "Holati"],
+    ...adminProducts.map((p) => [
+      p.id,
+      p.name,
+      p.category,
+      p.internalCode,
+      p.brand,
+      p.models.join(", "),
+      p.price,
+      p.cost,
+      p.stock,
+      p.hidden ? "Yashirin" : "Faol"
+    ])
+  ];
+
+  const csv = "\uFEFF" + rows.map((row) =>
+    row.map((value) =>
+      `"${String(value ?? "").replace(/"/g, '""')}"`
+    ).join(";")
+  ).join("\r\n");
+
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "phoneparts-mahsulotlar.csv";
+  link.click();
+
+  URL.revokeObjectURL(url);
+});
+
+// 21. SOZLAMALAR TUGMALARI
+$("#bannerSettingsBtn")?.addEventListener("click", () => {
+  toast("Banner sozlamalari hali Supabase bilan ulanmagan.");
+});
+
+$("#employeeSettingsBtn")?.addEventListener("click", () => {
+  toast("Xodimlar sozlamalari hali ulanmagan.");
+});
+
+$("#deliverySettingsBtn")?.addEventListener("click", () => {
+  toast("Yetkazib berish sozlamalari hali ulanmagan.");
+});
+
+// 22. SANA
+const todayDate = $("#todayDate");
+if (todayDate) {
+  todayDate.textContent = new Date().toLocaleDateString("uz-UZ", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+// 23. ADMIN PANELNI ISHGA TUSHIRISH
+async function initAdmin() {
+  if (!window.supabase) {
+    toast("Supabase kutubxonasi yuklanmagan. admin.html faylini tekshiring.", "error");
+    return;
+  }
+
+  await Promise.all([
+    loadAdminProducts(),
+    loadBrands(),
+    loadOrders(),
+    loadCustomers()
+  ]);
+
+  renderStock();
+  refreshStockProductOptions();
+}
+
+initAdmin();
