@@ -491,6 +491,8 @@ function refreshStockProductOptions() {
 }
 
 // 11. MODAL OCHISH VA YOPISH
+
+ // 11. MODAL OCHISH VA YOPISH
 function openForm(title, body, onSave) {
   const backdrop = $("#formBackdrop");
   const content = $("#formContent");
@@ -514,19 +516,31 @@ function openForm(title, body, onSave) {
     </form>
   `;
 
+  // Modal oynani ko'rsatish
+  backdrop.classList.remove("hidden");
   backdrop.classList.add("open");
   backdrop.style.display = "flex";
 
   const close = () => {
     backdrop.classList.remove("open");
+    backdrop.classList.add("hidden");
     backdrop.style.display = "none";
   };
 
   $("#modalCloseBtn")?.addEventListener("click", close);
   $("#cancelDynamicForm")?.addEventListener("click", close);
 
+  // Oynaning tashqi qismini bosganda yopish
+  backdrop.onclick = (event) => {
+    if (event.target === backdrop) {
+      close();
+    }
+  };
+
+  // Formani saqlash
   $("#adminDynamicForm")?.addEventListener("submit", async (event) => {
     event.preventDefault();
+
     const submit = event.submitter;
     if (submit) submit.disabled = true;
 
@@ -541,6 +555,7 @@ function openForm(title, body, onSave) {
     }
   });
 }
+
 
 function closeForm() {
   const backdrop = $("#formBackdrop");
