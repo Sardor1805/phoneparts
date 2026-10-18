@@ -140,3 +140,279 @@
     padding: 25px 20px;
   }
 }
+
+/* ==========================================
+   PHONEPARTS — MAHSULOT QO‘SHISH / TAHRIRLASH
+   ========================================== */
+
+#formBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(3, 8, 15, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+#formBackdrop.open {
+  display: flex !important;
+}
+
+#formBackdrop.hidden {
+  display: none !important;
+}
+
+#formBackdrop .form-modal {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding: 30px;
+  color: var(--text);
+  background: #111b2a;
+  border: 1px solid #2a394d;
+  border-radius: 20px;
+  box-shadow: 0 30px 90px #0009;
+  animation: productModalIn 0.22s ease-out;
+  scrollbar-width: thin;
+  scrollbar-color: #394b61 #111b2a;
+}
+
+@keyframes productModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Sarlavha */
+#formBackdrop .form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 26px;
+  padding: 0 0 20px;
+  border-bottom: 1px solid #28364a;
+}
+
+#formBackdrop .form-header h2 {
+  margin: 0;
+  color: #f1f5f9;
+  font-family: Manrope, sans-serif;
+  font-size: 23px;
+  font-weight: 800;
+  letter-spacing: -0.6px;
+}
+
+#formBackdrop #modalCloseBtn,
+#formBackdrop #closeForm {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  color: #b8c5d6;
+  background: #1b293b;
+  border: 1px solid #34445a;
+  border-radius: 11px;
+  font-size: 25px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#formBackdrop #modalCloseBtn:hover,
+#formBackdrop #closeForm:hover {
+  color: #fff;
+  background: #a93242;
+  border-color: #a93242;
+}
+
+/* Forma maydonlari */
+#adminDynamicForm {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 18px;
+}
+
+#adminDynamicForm label {
+  display: block;
+  min-width: 0;
+  color: #c4d0df;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+#adminDynamicForm input,
+#adminDynamicForm select,
+#adminDynamicForm textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin-top: 8px;
+  padding: 13px 14px;
+  color: #edf3fb;
+  background: #0b1422;
+  border: 1px solid #304158;
+  border-radius: 10px;
+  outline: none;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s,
+    background 0.2s;
+}
+
+#adminDynamicForm input,
+#adminDynamicForm select {
+  min-height: 46px;
+}
+
+#adminDynamicForm textarea {
+  min-height: 110px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+#adminDynamicForm input::placeholder,
+#adminDynamicForm textarea::placeholder {
+  color: #6e8098;
+}
+
+#adminDynamicForm input:focus,
+#adminDynamicForm select:focus,
+#adminDynamicForm textarea:focus {
+  border-color: var(--green);
+  background: #0e1928;
+  box-shadow: 0 0 0 3px #9df56b18;
+}
+
+#adminDynamicForm select {
+  cursor: pointer;
+}
+
+#adminDynamicForm select option {
+  color: #edf3fb;
+  background: #111b2a;
+}
+
+/* Tavsif maydoni to‘liq kenglikda */
+#adminDynamicForm textarea {
+  grid-column: 1 / -1;
+}
+
+/* Pastki tugmalar */
+#adminDynamicForm .form-actions {
+  position: sticky;
+  bottom: -30px;
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+  margin: 8px -30px -30px;
+  padding: 18px 30px;
+  background: #111b2a;
+  border-top: 1px solid #28364a;
+}
+
+#adminDynamicForm .form-actions button {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 1px solid #34445a;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#adminDynamicForm #cancelDynamicForm {
+  color: #d2dbea;
+  background: #1b293b;
+}
+
+#adminDynamicForm #cancelDynamicForm:hover {
+  background: #29394f;
+}
+
+#adminDynamicForm .form-actions button[type="submit"] {
+  color: #132017;
+  background: var(--green);
+  border-color: var(--green);
+}
+
+#adminDynamicForm .form-actions button[type="submit"]:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+#adminDynamicForm .form-actions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+/* Kichik ekranlar */
+@media (max-width: 600px) {
+  #formBackdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  #formBackdrop .form-modal {
+    width: 100%;
+    max-width: none;
+    max-height: 94dvh;
+    padding: 22px 18px;
+    border-radius: 20px 20px 0 0;
+    border-bottom: 0;
+  }
+
+  #formBackdrop .form-header {
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+  }
+
+  #formBackdrop .form-header h2 {
+    font-size: 20px;
+  }
+
+  #adminDynamicForm {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 17px;
+  }
+
+  #adminDynamicForm textarea {
+    grid-column: auto;
+  }
+
+  #adminDynamicForm .form-actions {
+    bottom: -22px;
+    margin: 6px -18px -22px;
+    padding: 15px 18px;
+  }
+
+  #adminDynamicForm .form-actions button {
+    flex: 1;
+    padding: 0 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #formBackdrop .form-modal {
+    animation: none;
+  }
+}
