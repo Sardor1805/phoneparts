@@ -894,29 +894,66 @@ function stockEntryForm(product = null) {
 }
 
 // 17. NAVIGATSIYA
+
+ // 17. NAVIGATSIYA — admin.html BILAN MOSLASHTIRILDI
+
+const pageTitles = {
+  dashboard: "Boshqaruv paneli",
+  products: "Mahsulotlar",
+  brands: "Brendlar",
+  orders: "Buyurtmalar",
+  customers: "Mijozlar",
+  stock: "Ombor",
+  reports: "Hisobotlar",
+  settings: "Sozlamalar"
+};
+
 function navigate(page, title) {
-  document.querySelectorAll("[data-page]").forEach((el) => {
-    el.classList.toggle("active", el.dataset.page === page);
+  // Menyu tugmalarining faol holati
+  document.querySelectorAll(".nav-item[data-page], [data-page-link]").forEach((el) => {
+    const targetPage = el.dataset.page || el.dataset.pageLink;
+    el.classList.toggle("active", targetPage === page);
   });
 
-  document.querySelectorAll(".admin-page").forEach((el) => {
-    el.classList.toggle("active", el.id === page);
+  // HTML ichidagi sahifalarni almashtirish
+  document.querySelectorAll(".page, .admin-page").forEach((el) => {
+    el.classList.toggle("active", el.id === `page-${page}` || el.id === page);
   });
 
-  const crumb = $("#pageCrumb");
-  if (crumb && title) crumb.textContent = title;
+  // Sahifa sarlavhasi
+  const crumb = document.querySelector("#pageCrumb");
+  if (crumb) {
+    crumb.textContent = title || pageTitles[page] || page;
+  }
 
-  $("#sidebar")?.classList.remove("open");
+  // Mobil menyuni yopish
+  document.querySelector("#sidebar")?.classList.remove("open");
+  document.querySelector(".sidebar")?.classList.remove("open");
 }
 
-document.querySelectorAll("[data-page-link]").forEach((el) => {
-  el.addEventListener("click", () => {
-    navigate(el.dataset.pageLink, el.dataset.title || "");
+// Chap menyu
+document.querySelectorAll("[data-page], [data-page-link]").forEach((el) => {
+  el.addEventListener("click", (event) => {
+    const page = el.dataset.page || el.dataset.pageLink;
+    if (!page) return;
+
+    event.preventDefault();
+    navigate(page, el.dataset.title || pageTitles[page]);
   });
 });
 
-$("#mobileMenu")?.addEventListener("click", () => {
-  $("#sidebar")?.classList.toggle("open");
+// Sahifaga olib o'tuvchi tezkor tugmalar
+document.querySelectorAll("[data-goto]").forEach((el) => {
+  el.addEventListener("click", () => {
+    const page = el.dataset.goto;
+    if (page) navigate(page, pageTitles[page]);
+  });
+});
+
+// Mobil menyu
+document.querySelector("#mobileMenu")?.addEventListener("click", () => {
+  document.querySelector("#sidebar")?.classList.toggle("open");
+  document.querySelector(".sidebar")?.classList.toggle("open");
 });
 
 // 18. TUGMALAR VA QIDIRUVLAR
